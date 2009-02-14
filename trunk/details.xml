@@ -1,0 +1,138 @@
+<view width="505" height="336" onopen="detailsView.onOpen()" >
+  <script src="constants.js" />
+  <script src="util.js" />
+  <script src="scrollbar.js" />
+  <script src="details.js" />
+  <div name="window" width="505" height="331" background="images\details-frame-background.png">
+    <a name="title" x="10" y="10" width="493" height="18" font="helvetia" size="10" bold="true" color="#0252a5" trimming="character-ellipsis" underline="false">Lebanon president visits Tehran and it's totally awesome</a>
+    <label name="subtitle" x="11" y="36" height="18" font="helvetia" size="8" color="#0252a5" trimming="character-ellipsis">BBC News | Middle East | World Edition -</label>
+    <label name="date" y="36" height="18" font="helvetia" size="8" color="#0252a5">1 hr ago</label>
+    <div name="contentArea" x="14" y="56" width="478" height="241" background="#bfbfbf">    
+      <div name="contentContainer" x="1" y="1" width="476" height="239" background="#ffffff">
+        <div name="inner" x="5" y="5" width="468" height="228" background="#ffffff">
+          <label name="body" width="468" wordWrap="true" font="helvetia" size="8" color="#252525">
+    Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran.
+          
+Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran.
+          </label>
+        </div>
+      </div>
+      <div y="3" width="14" name="scrollbar" background="#FFFFFF">
+        <div width="14" height="12" name="scrollbarUp" background="images/scroll-up.gif" enabled="true"/>
+        <div width="14" y="12" name="scrollbarTrack" background="images/scroll-track.gif" enabled="true" />        
+        <div width="14" y="12" name="scrollbarBar" background="images/scroll-bar.gif" enabled="true" />                            
+        <div width="14" height="11" name="scrollbarDown" background="images/scroll-down.gif" enabled="true" />            
+      </div>
+    </div>
+    <div name="emailPane" x="5" y="92" width="496" height="213" visible="false">
+      <div name="border" width="496" height="1" background="#93bde7" />
+      <div name="pane" y="1" width="495" height="212" background="#ebf4fd">
+
+        <label name="fromLabel" size="8" x="9" y="6" align="right" height="21" font="helvetica" color="#000000" bold="true">From:</label>
+        <label name="fromArea" size="8" y="6" height="21" font="helvetica" color="#000000">James (james.yum@gmail.com)</label>
+
+        <label name="toLabel" size="8" x="9" y="29" align="right" height="19" font="helvetica" color="#000000" bold="true">To:</label>        
+        <div name="toArea" y="27" width="241" height="21" background="#a2c8ee">
+          <div x="1" y="1" width="239" height="19" background="#ffffff">
+            <edit name="toField" y="2" size="9" width="239" height="17" font="helvetica" 
+              background="#ffffff" color="#121212" enabled="true" />              
+          </div>
+        </div>
+
+        <label name="subjectLabel" size="8" x="9" y="57" align="right" height="19" font="helvetica" color="#000000" bold="true">Subject:</label>
+        <div name="subjectArea" y="55" width="241" height="21" background="#a2c8ee">
+          <div x="1" y="1" width="239" height="19" background="#ffffff">
+            <edit name="subjectField" y="2" size="9" width="239" height="17" font="helvetica" 
+              background="#ffffff" color="#121212" enabled="true" value="Lebanon president visits Tehran" />              
+          </div>
+        </div>
+
+        <label name="noteLeft" size="8" x="9" y="82" font="helvetica" color="#000000" bold="true">Note to go along with the item:</label>
+        <label name="noteRight" size="8" y="82" font="helvetica" color="#000000">(Optional, no more than 1,000 characters)</label>        
+
+        <div width="478" height="54" x="9" y="99" background="#bfbfbf">
+          <div width="476" height="52" x="1" y="1" background="#ffffff">
+            <edit name="emailField" y="2" size="9" width="474" height="48" font="helvetica" 
+            background="#ffffff" color="#121212" wordWrap="true" multiline="true" enabled="true" />
+          </div>
+        </div>
+
+        <checkbox name="emailCheck" x="9" y="160" width="100%" height="13" size="8" font="helvetica" color="#000000"
+          caption="Send me a copy of this email"
+          image="images\details-checkbox-off.png"
+          overImage="images\details-checkbox-off.png"
+          downImage="images\details-checkbox-off.png"
+          checkedImage="images\details-checkbox-on.png"
+          checkedOverImage="images\details-checkbox-on.png"
+          checkedDownImage="images\details-checkbox-on.png" />
+        <button name="send" caption="Send" x="9" y="178" width="48" height="22" font="arial" size="9" image="images/details-button-send.png" cursor="hand" />
+        <button name="cancel" caption="Cancel" x="59" y="178" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" cursor="hand" />
+      </div>
+    </div>
+    <div name="notePane" x="5" y="182" width="496" height="123" visible="false">
+      <div name="border" width="496" height="1" background="#93bde7" />
+      <div name="pane" y="1" width="495" height="122" background="#ebf4fd">
+        <div width="478" height="54" x="9" y="9" background="#bfbfbf">
+          <div width="476" height="52" x="1" y="1" background="#ffffff">
+            <edit name="noteField" y="2" size="9" width="474" height="48" font="helvetica" 
+            background="#ffffff" color="#121212" wordWrap="true" multiline="true" enabled="true" />
+          </div>
+        </div>
+        <checkbox name="noteCheck" x="9" y="70" width="100%" height="13" size="8" font="helvetica" color="#000000"
+          caption="Add to shared items"
+          image="images\details-checkbox-off.png"
+          overImage="images\details-checkbox-off.png"
+          downImage="images\details-checkbox-off.png"
+          checkedImage="images\details-checkbox-on.png"
+          checkedOverImage="images\details-checkbox-on.png"
+          checkedDownImage="images\details-checkbox-on.png" />
+        <button name="post" caption="Post Item" x="9" y="88" width="73" height="22" font="arial" size="9" image="images/details-button-post.png" cursor="hand" />
+      </div>
+    </div>    
+    <div name="toolbar" x="5" y="305" width="496" height="23" background="images\details-toolbar.png">
+      <div name="star" height="23">
+        <img name="icon" x="5" y="4" width="14" height="14" src="images\details-toolbar-star-off.png" enabled="true" cursor="hand"/>
+        <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Add star</a>
+      </div>
+      <div name="share" height="23">
+        <img name="icon" x="5" y="4" width="14" height="14" src="images\details-toolbar-share-off.png" enabled="true" cursor="hand"/>
+        <a name="link" x="23" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Share</a>
+      </div>
+      <div name="note" height="23">
+        <div name="active" height="22" background="#93bde7" visible="false">
+          <div x="1" height="21" background="#ebf4fd"/>
+        </div>
+        <img name="icon" x="5" y="4" width="14" height="14" src="images\details-toolbar-note.png" enabled="true" cursor="hand"/>
+        <a name="link" x="23" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Share with Note</a>      
+      </div>
+      <div name="email" height="23">
+        <div name="active" height="22" background="#93bde7" visible="false">
+          <div x="1" height="21" background="#ebf4fd"/>
+        </div>
+        <img name="icon" x="5" y="8" width="12" height="9" src="images\details-toolbar-email.png" enabled="true" cursor="hand"/>
+        <a name="link" x="19" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Email</a>      
+      </div>
+      <div name="unread" height="23">
+        <img name="icon" x="5" y="7" width="12" height="10" src="images\details-toolbar-unread-off.png" enabled="true" cursor="hand"/>
+        <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Keep Unread</a>      
+      </div>
+      <div name="tag" height="23">
+        <img name="icon" x="5" y="6" width="14" height="14" src="images\details-toolbar-tag.png" enabled="true" cursor="hand"/>
+        <a name="link" x="22" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Edit Tag</a>  
+        <label name="text" y="4" height="18" font="helvetica" size="8" color="#252525" visible="false"></label>          
+      </div>
+    </div>
+    <div name="tagPane" x="259" y="240" width="243" height="87" background="images\details-tag-background.png" visible="false">
+      <div width="235" height="79" x="3" y="1">
+        <div width="222" height="21" x="7" y="8" background="#bfbfbf">
+          <div width="220" height="19" x="1" y="1" background="#ffffff">
+            <edit name="tagEdit" width="214" height="18" x="2" y="2" font="helvetica" size="8" color="#000000" />
+          </div>
+        </div>
+        <label x="6" y="29" font="helvetica" size="8" color="#898989">Separate tags by commas</label>
+        <button name="save" caption="Save" x="7" y="49" width="48" height="22" font="arial" size="9" image="images/details-button-save.png" cursor="hand" />
+        <button name="cancel" caption="Cancel" x="57" y="49" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" overImage="images/details-button-cancel-over.png" cursor="hand" />
+      </div>
+    </div>        
+  </div>
+</view>
