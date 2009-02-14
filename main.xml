@@ -1,0 +1,235 @@
+<view width="260" height="340" resizable="true" resizeBorder="10 15 15 15" onopen="gadget.onOpen()">
+
+  <script src="constants.js" />  
+  <script src="util.js" />    
+  <script src="date.js" />      
+  <script src="httpRequest.js" />  
+  <script src="errorMessage.js" />  
+  <script src="search.js" />
+  <script src="show.js" />
+  <script src="scrollbar.js" />  
+  <script src="feed.js" />  
+  <script src="listing.js" />  
+  <script src="reader.js" />  
+  <script src="login.js" />
+  <script src="main.js" />
+
+  <div x="4" y="8" name="window" enabled="true">
+    
+    <div name="bottomRightMainBg" width="35" height="29" background="images/base_bottomright.png" />
+    <div name="bottomCenterMainBg" x="31" height="29" background="images/base_bottom.png" />
+    <div name="bottomLeftMainBg" width="31" height="29" background="images/base_bottomleft.png" />
+    <div name="middleRightMainBg" y="25" width="35" background="images/base_right.png" />
+    <div name="middleCenterMainBg" x="31" y="25" background="images/base_fill.png" />
+    <div name="middleLeftMainBg" y="25" width="31" background="images/base_left.png" />
+    <div name="topRightMainBg" width="35" height="25" background="images/base_topright.png" />
+    <div name="topCenterMainBg" x="31" height="25" background="images/base_top.png" />
+    <div name="topLeftMainBg" width="31" height="25" enabled="true" background="images/base_topleft.png" />
+
+    <label name="username" x="35" y="6" size="10" font="helvetica" bold="true" color="#0252a5" visible="false"></label>
+
+    <div name="loginDiv" x="10" y="40" height="180" visible="true">      
+      <label width="100%" height="16" font="helvetica" size="9">&LOGIN_SIGN_IN_TO_APP;</label>
+      <label width="100%" y="18" height="16" font="helvetica" size="9">&LOGIN_YOUR;</label>
+      <img x="30" y="18" width="55" height="19" src="images/google_logo.png" />
+      <label width="100%" x="88" y="18" height="16" font="helvetica" size="9" bold="true">&LOGIN_ACCOUNT;</label>
+
+      <div name="userBg" y="64" width="100%" height="19" background="#7f9db9"/>
+      <div name="passBg" y="104" width="100%" height="18" background="#7f9db9"/>
+
+      <label name="userLabel" y="48" width="100%" height="16" font="helvetica" size="9" color="#0066cc">&LOGIN_USERNAME;</label>
+      <edit name="user" x="1" y="65" height="17" font="helvetica"
+        onkeypress="loginSession.onUsernameKeyPress()" />
+
+      <label name="passLabel" y="88" height="16" font="helvetica" size="9" color="#0066cc">&LOGIN_PASSWORD;</label>
+      <edit name="pass" x="1" y="105" height="16" font="helvetica" passwordChar="*"
+        onkeypress="loginSession.onPasswordKeyPress()" />
+
+      <img name="rememberFocus" visible="false" y="127" width="22" height="22" src="images/checkbox_focus.png" />
+      <checkbox name="remember" x="3" y="130" width="100%" height="16"
+        font="helvetica" size="9" trimming="word-ellipsis"
+        caption="&LOGIN_REMEMBER_ME;" value="false" cursor="hand"
+        onchange="loginSession.onRememberFocus(true)"
+        onkeypress="loginSession.onRememberKeyPress()"
+        onfocusin="loginSession.onRememberFocus(true)"
+        onfocusout="loginSession.onRememberFocus(false)"
+        image="images/checkbox_default.png"
+        overImage="images/checkbox_default.png"
+        downImage="images/checkbox_default.png"
+        checkedImage="images/checkbox_checked.png"
+        checkedOverImage="images/checkbox_checked.png"
+        checkedDownImage="images/checkbox_checked.png" />
+
+      <button name="login" y="155" width="84" height="24"
+        font="helvetica" size="8" caption="&LOGIN_SIGN_IN;" cursor="hand"
+        onkeypress="loginSession.onLoginKeyPress()"
+        onfocusin="loginSession.onLoginFocus(true)"
+        onfocusout="loginSession.onLoginFocus(false)"
+        image="images/action_default.png" downImage="images/action_down.png"
+        overImage="images/action_hover.png" />
+    </div>
+
+    <div name="mainDiv" x="7" y="26" visible="false">
+
+      <div name="titleStatus" y="0" height="46">
+        <div name="titleStatusLeft" width="2" height="46" 
+          background="images/blue-area-left.gif" />
+        <div name="titleStatusContent" x="2" height="46"
+          background="images/blue-area-fill.gif"> 
+
+          <label name="title" y="4" color="#ffffff" bold="true" font="helvetica" size="10" trimming="character-ellipsis">Google News</label>
+          <a name="markRead" y="6" color="#ffffff" bold="true" font="helvetica" size="8" trimming="character-ellipsis" overColor="#e1eef6">Mark all as read</a>
+
+          <div name="showItems" height="18" y="28">
+            <label name="showLabel" color="#333333" bold="true" font="helvetica" size="8">Show</label>
+            <a name="showNewItems" color="#282828" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="false">279 new items</a>
+            <div name="showItemsDivider" width="1" y="2" height="12" background="#adb5be" />
+            <a name="showAllItems" color="#0252a5" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="true">all items</a>
+          </div>
+          
+          <button name="reload" y="31" width="9" image="images\reload.png" downImage="images\reload-hover.png" overImage="images\reload-hover.png" enabled="true" cursor="hand" />
+          
+        </div>
+        <div name="titleStatusRight" width="4" height="46"
+          background="images/blue-area-right.gif" />            
+      </div>
+        
+      <div name="contentArea" y="46">
+        <div name="contentContainer" background="#FFFFFF">
+          <div x="4" y="0" name="feedContent" background="#FFFFFF" />
+          <div x="4" y="0" name="listingContent" background="#FFFFFF" visible="false">
+            <a name="allItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">All items (66)</a>
+            <div x="13" height="19">
+              <a name="starredItems" color="#105caa" height="19" font="helvetica" size="9" bold="true">Starred items</a>
+              <img name="starredItemsIcon" y="3" width="12" height="12" src="images/icon-star.png" />
+            </div>
+            
+            <a name="yourStuff" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">Your stuff</a>
+            <div x="34" height="19">
+              <img name="sharedItemsIcon" y="3" width="12" height="12" src="images/icon-shared.png" />
+              <a name="sharedItems" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="true">Shared items</a>
+            </div>
+            <div x="34" height="19">
+              <img name="yourNotesIcon" y="3" width="12" height="12" src="images/icon-notes.png" />
+              <a name="yourNotes" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="true">Notes</a>
+            </div>
+              
+            <a name="friendsItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">Friends' shared items</a>
+            <div name="friends" x="30">
+              <div height="19">
+                <img y="2" width="16" height="16" src="images/tmp-userpic.jpg" />
+                <a color="#105caa" x="18" height="19" font="helvetica" size="9" bold="true">Dana</a>
+              </div>
+              <div height="19">
+                <img y="2" width="16" height="16" src="images/tmp-userpic.jpg" />
+                <a color="#105caa" x="18" height="19" font="helvetica" size="9" bold="true">Dana</a>
+              </div>              
+            </div>
+
+            <div name="feeds">
+              <div name="feed" x="16" height="19">
+                <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Apple Blog</a>
+              </div>  
+              <div name="feed" x="16" height="19">
+                <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Unofficial Apple Weblog (1)</a>
+              </div>
+              <div name="feed" x="16" height="19">
+                <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">AppleInsider</a>
+              </div>
+
+              <div name="folder" x="2">
+                <div name="header" height="19">
+                  <img name="toggle" y="5" width="9" height="9" src="images/folder-plus.png" cursor="hand" enabled="true" />
+                  <img name="icon" x="13" y="3" width="16" height="14" src="images/folder-closed.png" />
+                  <a color="#105caa" x="29" height="19" font="helvetica" size="9" bold="true">home-design (1)</a>
+                </div>
+                <div name="contents" x="29" y="18" visible="false">
+                  <div name="feed" height="19">
+                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Apple Blog</a>
+                  </div>  
+                  <div name="feed" height="19">
+                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Unofficial Apple Weblog (1)</a>
+                  </div>
+                  <div name="feed" height="19">
+                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">AppleInsider</a>
+                  </div>
+                </div>
+              </div>
+
+              <div name="folder" x="2">
+                <div name="header" height="19">
+                  <img name="toggle" y="5" width="9" height="9" src="images/folder-minus.png" cursor="hand" enabled="true" />
+                  <img name="icon" x="13" y="3" width="16" height="14" src="images/folder-open.png" />
+                  <a color="#105caa" x="29" height="19" font="helvetica" size="9" bold="true">chicken-design (1)</a>
+                </div>
+                <div name="contents" x="29" y="18">
+                  <div name="feed" height="19">
+                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Apple Blog</a>
+                  </div>  
+                  <div name="feed" height="19">
+                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Unofficial Apple Weblog (1)</a>
+                  </div>
+                  <div name="feed" height="19">
+                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
+                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">AppleInsider</a>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <div y="3" width="14" name="scrollbar" background="#FFFFFF">
+            <div width="14" height="12" name="scrollbarUp" background="images/scroll-up.gif" enabled="true"/>
+            <div width="14" y="12" name="scrollbarTrack" background="images/scroll-track.gif" enabled="true" />        
+            <div width="14" y="12" name="scrollbarBar" background="images/scroll-bar.gif" enabled="true" />                            
+            <div width="14" height="11" name="scrollbarDown" background="images/scroll-down.gif" enabled="true" />            
+          </div>     
+        </div>
+        <div name="contentShadowRight" width="2"
+          background="images/dropshadow-right.gif" />              
+        <div name="contentShadowBottomLeft" width="2" height="2"
+          background="images/dropshadow-left-bottom.gif" />                         
+        <div name="contentShadowBottom" height="2"
+          background="images/dropshadow-bottom.gif" />                      
+        <div name="contentShadowBottomRight" width="2" height="2"
+          background="images/dropshadow-right-bottom.gif" />              
+            
+      </div>
+
+      <div name="searchArea" height="21" background="#a2c8ee" visible="false">
+        <div name="searchContainer" x="1" y="1" height="19" background="#ffffff">
+          <edit name="search" y="2" size="9" height="17" font="helvetica" 
+            background="#ffffff" color="#121212" enabled="true" />              
+          <div name="searchClear" y="6" width="8" height="8" 
+            background="images/textbox-close.gif" cursor="hand" enabled="true" />              
+        </div>
+      </div>
+
+
+      <div name="commands" height="23">
+        <a name="commandsFeeds" x="3" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true">&COMMAND_FEEDS;</a>
+        <a name="commandsClose" x="3" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true" visible="false">&COMMAND_CLOSE;</a>
+        <a name="commandsSearch" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true">&COMMAND_SEARCH;</a>
+        <a name="commandsSignout" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true">&COMMAND_SIGN_OUT;</a>
+      </div>
+      
+    </div>
+
+    <div name="loading" background="#cc4444" y="6" height="16" visible="false" >
+      <label name="loadingLabel" font="arial" size="8" color="#ffffff">&LOADING;</label>
+    </div>
+    <div name="searching" background="#cc4444" y="6" height="16" visible="false">    
+      <label name="searchingLabel" font="arial" size="8" color="#ffffff">&SEARCHING;</label>
+    </div>
+  </div>
+  
+  <div width="32" height="33" background="images/logo.png" />
+</view>
