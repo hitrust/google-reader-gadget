@@ -2,8 +2,9 @@
 /**
  * Constructor for Feed class.
  */
-function Feed(url) {
-  this.url = url;
+function Feed(id, title) {
+  this.id = id;
+  this.title = title || '';
   this.unread = 0;
   this.feed = {};
   this.show = 'all';
@@ -12,14 +13,14 @@ function Feed(url) {
 /**
 * Load feed data
 */
-Feed.prototype.load = function() {
-  if (!this.url) {
+Feed.prototype.reload = function() {
+  if (!this.id) {
     errorMessage.display(ERROR_FEED_NOT_FOUND);
     return false;
   }
   
   httpRequest.host = CONNECTION.FEED_HOST;
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + this.url; 
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + this.id; 
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect('', this.getSuccess.bind(this), this.getError.bind(this));
   return true;
@@ -29,9 +30,9 @@ Feed.prototype.load = function() {
  * Check if the reader is currently displaying this feed
  */
 Feed.prototype.isDisplayed = function() {
-  if (!this.url) return false;
+  if (!this.id) return false;
   if (!reader.currentFeed) return false;
-  return this.url == reader.currentFeed.url;
+  return this.id == reader.currentFeed.id;
 }
 
 /**
@@ -70,24 +71,24 @@ Feed.prototype.refresh = function() {
     var article = this.feed.items[i];
     if (article.read && this.show != 'all') continue;
     
-    var item = feedContent.appendElement('<div height="36" cursor="hand" enabled="true" />');
+    var element = feedContent.appendElement('<div height="36" cursor="hand" enabled="true" />');
 
     if (article.starred) {
-      item.appendElement('<div y="10" width="13" height="13" background="images/star-on.png" />');
+      element.appendElement('<div y="10" width="13" height="13" background="images/star-on.png" />');
     } else {
-      item.appendElement('<div y="10" width="13" height="13" background="images/star-off.png" />');    
+      element.appendElement('<div y="10" width="13" height="13" background="images/star-off.png" />');    
     }
 
-    var titleLabel = item.appendElement('<label x="17" y="4" font="helvetica" size="8" bold="true" color="#161616" trimming="character-ellipsis"></label>');
+    var titleLabel = element.appendElement('<label x="17" y="4" font="helvetica" size="8" bold="true" color="#161616" trimming="character-ellipsis"></label>');
     titleLabel.innerText = article.title;
 
-    var snippetLabel = item.appendElement('<label x="17" y="17" font="helvetica" size="8" color="#19642c" trimming="character-ellipsis"></label>');
+    var snippetLabel = element.appendElement('<label x="17" y="17" font="helvetica" size="8" color="#19642c" trimming="character-ellipsis"></label>');
     snippetLabel.innerText = article.snippet;
 
-    item.onmouseover = function() { event.srcElement.background='#e1eef6'; }
-    item.onmouseout = function() { event.srcElement.background=''; }
+    element.onmouseover = function() { event.srcElement.background='#e1eef6'; }
+    element.onmouseout = function() { event.srcElement.background=''; }
 
-    item.onclick = function() { 
+    element.onclick = function() { 
       gadget.detailsView.SetContent('', undefined, 'details.xml', false, 0);
       plugin.showDetailsView(gadget.detailsView, "", gddDetailsViewFlagNone, gadget.onDetailsViewFeedback.bind(gadget));
     }.bind(this);
@@ -123,7 +124,13 @@ Feed.prototype.draw = function() {
 /**
  * Process feed data
  */
-Feed.prototype.getSuccess = function(responseText, search) {
+Feed.prototype.getSuccess = function(responseText) {
+  this.feed = responseText.evalJSON()
+  if (!this.feed) {
+    errorMessage.display(ERROR_MALFORMED_FEED);
+    return; 
+  }
+  /*
   try {
     if (!responseText.trim()) throw new Exception();    
     this.feed = eval('(' + responseText + ')');    
@@ -131,7 +138,7 @@ Feed.prototype.getSuccess = function(responseText, search) {
     errorMessage.display(ERROR_MALFORMED_FEED);
     return;
   }
-  
+  */
   if (this.isDisplayed()) {
     this.parse();
     this.refresh();

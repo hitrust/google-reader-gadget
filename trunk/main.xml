@@ -8,6 +8,7 @@
   <script src="search.js" />
   <script src="show.js" />
   <script src="scrollbar.js" />  
+  <script src="folder.js" />  
   <script src="feed.js" />  
   <script src="listing.js" />  
   <script src="reader.js" />  
@@ -96,8 +97,8 @@
         
       <div name="contentArea" y="46">
         <div name="contentContainer" background="#FFFFFF">
-          <div x="4" y="0" name="feedContent" background="#FFFFFF" />
-          <div x="4" y="0" name="listingContent" background="#FFFFFF" visible="false">
+          <div x="4" y="0" name="feedContent" background="#FFFFFF" visible="false" />
+          <div x="4" y="0" name="listingContent" background="#FFFFFF">
             <a name="allItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">All items (66)</a>
             <div x="13" height="19">
               <a name="starredItems" color="#105caa" height="19" font="helvetica" size="9" bold="true">Starred items</a>
@@ -125,66 +126,7 @@
                 <a color="#105caa" x="18" height="19" font="helvetica" size="9" bold="true">Dana</a>
               </div>              
             </div>
-
-            <div name="feeds">
-              <div name="feed" x="16" height="19">
-                <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Apple Blog</a>
-              </div>  
-              <div name="feed" x="16" height="19">
-                <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Unofficial Apple Weblog (1)</a>
-              </div>
-              <div name="feed" x="16" height="19">
-                <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">AppleInsider</a>
-              </div>
-
-              <div name="folder" x="2">
-                <div name="header" height="19">
-                  <img name="toggle" y="5" width="9" height="9" src="images/folder-plus.png" cursor="hand" enabled="true" />
-                  <img name="icon" x="13" y="3" width="16" height="14" src="images/folder-closed.png" />
-                  <a color="#105caa" x="29" height="19" font="helvetica" size="9" bold="true">home-design (1)</a>
-                </div>
-                <div name="contents" x="29" y="18" visible="false">
-                  <div name="feed" height="19">
-                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Apple Blog</a>
-                  </div>  
-                  <div name="feed" height="19">
-                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Unofficial Apple Weblog (1)</a>
-                  </div>
-                  <div name="feed" height="19">
-                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">AppleInsider</a>
-                  </div>
-                </div>
-              </div>
-
-              <div name="folder" x="2">
-                <div name="header" height="19">
-                  <img name="toggle" y="5" width="9" height="9" src="images/folder-minus.png" cursor="hand" enabled="true" />
-                  <img name="icon" x="13" y="3" width="16" height="14" src="images/folder-open.png" />
-                  <a color="#105caa" x="29" height="19" font="helvetica" size="9" bold="true">chicken-design (1)</a>
-                </div>
-                <div name="contents" x="29" y="18">
-                  <div name="feed" height="19">
-                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Apple Blog</a>
-                  </div>  
-                  <div name="feed" height="19">
-                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">The Unofficial Apple Weblog (1)</a>
-                  </div>
-                  <div name="feed" height="19">
-                    <img y="4" width="11" height="11" src="images/icon-feed.png" />
-                    <a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true">AppleInsider</a>
-                  </div>
-                </div>
-              </div>
-              
-            </div>
+            <div name="feeds" />
           </div>
           <div y="3" width="14" name="scrollbar" background="#FFFFFF">
             <div width="14" height="12" name="scrollbarUp" background="images/scroll-up.gif" enabled="true"/>
@@ -215,9 +157,9 @@
 
 
       <div name="commands" height="23">
-        <a name="commandsFeeds" x="3" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true">&COMMAND_FEEDS;</a>
+        <a name="commandsFeeds" x="3" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true" visible="false">&COMMAND_FEEDS;</a>
         <a name="commandsClose" x="3" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true" visible="false">&COMMAND_CLOSE;</a>
-        <a name="commandsSearch" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true">&COMMAND_SEARCH;</a>
+        <a name="commandsSearch" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true" visible="false">&COMMAND_SEARCH;</a>
         <a name="commandsSignout" height="18" font="helvetica" size="9" color="#0252a5" underline="true" bold="true">&COMMAND_SIGN_OUT;</a>
       </div>
       
