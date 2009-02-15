@@ -17,6 +17,7 @@ function HTTPRequest() {
   this.timeoutTimer = null;
   this.headers = {};
   this.loadingIndicator = false;
+  this.overrideLoading = false;
 }
 
 HTTPRequest.available = true;
@@ -171,6 +172,7 @@ HTTPRequest.prototype.showLoading = function() {
 
 HTTPRequest.prototype.hideLoading = function() {
   try {    
+    this.overrideLoading = false;
     this.loadingIndicator.visible = false;
     this.loadingIndicator = false;
   } catch(e) {
@@ -194,11 +196,16 @@ HTTPRequest.prototype.receivedData = function() {
   if (this.packet.readyState != 4) {
     return;
   }
-  this.hideLoading();  
+  if (!this.overrideLoading) {
+    this.hideLoading();  
+  }
   this.clearTimeout();  
   setTimeout(HTTPRequest.finishedGracePeriod, CONNECTION.TIME_BETWEEN_REQUESTS);
   if (this.packet.status < 200 || this.packet.status >= 300) {
     debug.error('A transfer error has occured !');
+    if (this.overrideLoading) {
+      this.hideLoading();  
+    }
     this.onFailure();
     return;
   }

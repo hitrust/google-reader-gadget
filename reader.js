@@ -3,9 +3,7 @@
  * Constructor for Reader class.
  */
 function Reader() {
-  this.feeds = [];  
-  
-  this.content = feedContent;   
+  this.content = listingContent;   
   this.currentFeed = false;
   this.scrollbar = new CustomScrollbar(this);
   
@@ -39,9 +37,16 @@ Reader.prototype.logout = function() {
 * Reset reader
 */
 Reader.prototype.reset = function() {
-  this.feeds = [];  
-  
+  listing.reset();
   feedContent.removeAllElements();
+}
+
+/**
+* Reload reader content
+*/
+Reader.prototype.reload = function() {
+  if (loading.visible) return;
+  listing.reload();
 }
 
 /**
@@ -51,7 +56,7 @@ Reader.prototype.showListing = function() {
   feedContent.visible = false;
   listingContent.visible = true;
   commandsFeeds.visible = false;
-  commandsClose.visible = true;
+  commandsClose.visible = this.currentFeed ? true : false;
   commandsSearch.visible = false;
 
   this.content = listingContent;
@@ -108,18 +113,6 @@ Reader.prototype.draw = function() {
 	this.scrollbar.draw();
 }
 
-/**
-* Reload reader feed list
-*/
-Reader.prototype.reload = function() {
-  if (loading.visible) return;
- // http://www.google.com/reader/api/0/subscription/list
- // http://www.google.com/reader/api/0/unread-count?all=true 
- 
- this.currentFeed = new Feed('feed/http://itsgettinghotinhere.org/feed/');
- this.currentFeed.load();
- showLine.show(this.currentFeed.show);
-}
 
 // instantiate object in the global scope
 var reader = new Reader();

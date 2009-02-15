@@ -6,7 +6,7 @@
 var REPORTED_CLIENT_NAME = 'gd-reader-gadget-' + VERSION_STRING;
 
 var CONNECTION = {
-  TIME_BETWEEN_REQUESTS: 1000, // 1 second
+  TIME_BETWEEN_REQUESTS: 100, // 100 ms
   TIMEOUT: 15000, // 15 seconds
   REFRESH_INTERVAL: 60000, // 60 seconds
 
@@ -18,7 +18,12 @@ var CONNECTION = {
   READER_HOST: 'www.google.com',  
   READER_URL: 'http://www.google.com/reader/api/0/',
   STREAM_PREFIX: 'stream/contents/',
-  SEARCH_URL: '&q='
+  SEARCH_URL: '&q=',
+  API_SUBSCRIPTIONS: 'subscription/list?output=json',
+  API_UNREADCOUNT: 'unread-count?all=true&output=json',  
+  API_SORTORDER: 'preference/stream/list?output=json',
+  API_PREFERENCES: 'preference/list?output=json',
+  API_FOLDERS: 'tag/list?output=json'
 };
 
 var UI = {

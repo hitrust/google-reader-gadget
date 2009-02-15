@@ -46,6 +46,18 @@ String.prototype.stripTags = function()
   return this.replace(/<\/?[^>]+>/gi, '');
 }
 
+// Returns a javascript object from json
+String.prototype.evalJSON = function()
+{
+  try {
+    if (!this.trim()) throw new Exception();    
+    var json = eval('(' + this + ')');    
+  } catch (e) {  
+    return false;
+  }
+  return json;
+}
+
 // Index of value in an array
 if (!Array.prototype.indexOf) Array.prototype.indexOf = function(item, i) {
   i || (i = 0);
