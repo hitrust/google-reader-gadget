@@ -118,14 +118,7 @@ Main.prototype.draw = function() {
     } else {
       title.width = titleStatusContent.width;
     }
-    
-    showItems.width = titleStatusContent.width - (14 + reload.width);    
-    reload.x = showItems.width + 7;
-    
-    showNewItems.x = labelCalcWidth(showLabel) - 2;
-    showItemsDivider.x = labelCalcWidth(showNewItems) + showNewItems.x - 2;
-    showAllItems.x = showItemsDivider.x + showItemsDivider.width + 3;
-    
+        
     showLine.draw();
     
     commands.y = contentArea.height + contentArea.y + 6 + searchOffset;

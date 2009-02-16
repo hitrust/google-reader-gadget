@@ -5,9 +5,10 @@ function Listing() {
   this.feeds = {};  
   this.sortIDs = {};
   this.folders = {};
-  this.saveFolders = {};
   this.max = 1000;
   this.unread = 0;
+  this.openFolders = {};
+  this.scroll = false;
 }
 
 /**
@@ -18,23 +19,10 @@ Listing.prototype.reset = function() {
 }
 
 /**
-* Toggle folder open/close
-*/
-Listing.prototype.toggleFolder = function(div) {	
-  var divcontents = div.children.item('contents');
-  var imgtoggle = div.children.item('header').children.item('toggle');;
-  var imgicon = div.children.item('header').children.item('icon');;
-  
-  if (divcontents.visible) {
-    imgtoggle.src = 'images\\folder-plus.png';
-    imgicon.src = 'images\\folder-closed.png';
-    divcontents.visible = false;
-  } else {
-    imgtoggle.src = 'images\\folder-minus.png';
-    imgicon.src = 'images\\folder-open.png';
-    divcontents.visible = true;  
-  }
-  reader.draw();
+ * Save the scroll position
+ */
+Listing.prototype.saveScroll = function() {
+  this.scroll = reader.scrollbar.postition();
 }
 
 /**
@@ -45,8 +33,11 @@ Listing.prototype.refresh = function() {
 
   feeds.removeAllElements();
 
+  this.updateUnreadCount(this.folders['root']);
+
   for (var i=0; i<this.folders['root'].items.length; i++) {
-    var sortid = this.folders['root'].items[i];
+    var folder = this.folders['root'];
+    var sortid = folder.items[i];
     var item = this.sortIDs[sortid];
 
     if (!item) continue;
@@ -54,58 +45,20 @@ Listing.prototype.refresh = function() {
     if (item.type == 'folder') {
       var folder = this.folders[item.id];
       if (!folder) continue;
+
+      folder.refresh();
       
-      var element = feeds.appendElement('<div name="folder" x="2" />');
-      var header = element.appendElement('<div name="header" height="19" />');
-      var contents = element.appendElement('<div name="contents" x="29" y="18" />');
-
-      header.appendElement('<img name="toggle" y="5" width="9" height="9" src="images/folder-minus.png" cursor="hand" enabled="true" />');
-      header.appendElement('<img name="icon" x="13" y="3" width="16" height="14" src="images/folder-open.png" />');
-
-      var link = header.appendElement('<a color="#105caa" x="29" height="19" font="helvetica" size="9" bold="true" />');
-      link.innerText = item.title;
-
-      if (folder.unread > 0 && folder.unread < this.max) {
-        link.innerText += ' ('+folder.unread+')';
-      } else if (folder.unread >= this.max) {
-        link.innerText += ' ('+this.max+'+)';      
-      }
-
       for (var j=0; j<folder.items.length; j++) {
-        var folderItem = this.sortIDs[folder.items[j]];
-        this.refreshFeed(folderItem, contents);
-      }
+        var sortid = folder.items[j];
+        var item = this.sortIDs[sortid];
 
-      if (!folder.isExpanded) {
-        this.toggleFolder(element);
+        folder.refreshFeed(item);
       }
       
     } else if (item.type == 'feed') {
-      this.refreshFeed(item, feeds);
+      folder.refreshFeed(item);
     }
   }
-}
-
-/**
-* Load a single feed
-*/
-Listing.prototype.refreshFeed = function(item, container) {	
-  if (!item) return;
-
-  var feed = this.feeds[item.id];
-  if (!feed) return;
-
-  var element = container.appendElement('<div name="feed" x="16" height="19" />');
-  element.appendElement('<img y="4" width="11" height="11" src="images/icon-feed.png" />');
-
-  var link = element.appendElement('<a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true"></a>');
-  link.innerText = item.title;
-
-  if (feed.unread > 0 && feed.unread < this.max) {
-    link.innerText += ' ('+feed.unread+')';
-  } else if (feed.unread >= this.max) {
-    link.innerText += ' ('+this.max+'+)';      
-  }  
 }
 
 
@@ -166,9 +119,7 @@ Listing.prototype.draw = function() {
 
      	divheader.width = div.width;     	
      	divcontents.width = div.width;
-     	
-     	divheader.children.item('toggle').onclick = this.toggleFolder.bind(this, div);
-     	
+     	     	
      	if (divcontents.visible) {
        	for (var j=0; j<divcontents.children.count; j++) {
           var divfeed = divcontents.children.item(j);		
@@ -190,42 +141,21 @@ Listing.prototype.draw = function() {
   feeds.height = y;
   reader.content.height += feeds.height;
   feeds.y += friends.height;
-
-	/*
-	for (var i=0; i<listingContent.children.count; i++) {
-    var div = listingContent.children.item(i);		
-  	for (var j=0; j<div.children.count; j++) {    
-      if (div.children.item(j).tagName == 'label') {
-        div.children.item(j).width = div.width - 2.5*(div.children.item(j).x);
-      }
-    }
-  }*/
 }
 
 /**
 * Load feed list
 */
 Listing.prototype.reload = function() {
+  if (loading.visible) return false;
+
   httpRequest.host = CONNECTION.FEED_HOST;
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.overrideLoading = true;
 
-/*
-  API_SUBSCRIPTIONS: 'subscription/list?output=json',
-  API_UNREADCOUNT: 'unread-count?all=true&output=json',  
-  API_SORTORDER: 'preference/stream/list?output=json',
-  API_PREFERENCES: 'preference/list?output=json',
-  API_FOLDERS: 'tag/list?output=json'
-*/
-
   // request the subscriptions
-  debug.error('beginning');
   httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_SUBSCRIPTIONS;
   httpRequest.connect('', this.saveSubscriptions.bind(this), this.getError.bind(this));
-
-/* this.currentFeed = new Feed('feed/http://itsgettinghotinhere.org/feed/');
- this.currentFeed.load();
- showLine.show(this.currentFeed.show); */
 }
 
 /**
@@ -242,7 +172,6 @@ Listing.prototype.getError = function() {
 */
 Listing.prototype.saveSubscriptions = function(responseText) {
   var json = responseText.evalJSON()
-  debug.error('saveSubscriptions');
 
   if (!json || !json.subscriptions || !json.subscriptions.length) {
     this.getError();
@@ -250,8 +179,11 @@ Listing.prototype.saveSubscriptions = function(responseText) {
   }
 
   this.folders = {};
-  this.folders['root'] = new Folder();
-  this.folders['all'] = new Folder();
+  this.folders['root'] = new Folder('', 'All items');
+  this.folders['root'].link = allItems;
+  
+  this.folders['all'] = new Folder('', 'All items');
+  this.folders['all'].link = allItems;
 
   for (var i=0; i<json.subscriptions.length; i++) {
     var subscription = json.subscriptions[i];
@@ -270,6 +202,7 @@ Listing.prototype.saveSubscriptions = function(responseText) {
           this.folders[category.id] = new Folder(category.id, category.label);
         }
         this.folders[category.id].push(subscription.sortid);
+        this.feeds[subscription.id].folders[category.id] = this.folders[category.id];
       }
     } else {
      this.folders['root'].push(subscription.sortid);
@@ -304,7 +237,6 @@ Listing.prototype.saveUnreadCount = function(responseText) {
 */
 Listing.prototype._saveUnreadCount = function(responseText) {
   var json = responseText.evalJSON()
-  debug.error('saveUnreadCount');
 
   if (!json || !json.unreadcounts || !json.unreadcounts.length) {
     return false; 
@@ -319,14 +251,30 @@ Listing.prototype._saveUnreadCount = function(responseText) {
   for (var i=0; i<json.unreadcounts.length; i++) {
     var unreadcount = json.unreadcounts[i];
     if (this.folders[unreadcount.id]) {
-      this.folders[unreadcount.id].unread = unreadcount.count;
+      this.folders[unreadcount.id].setUnread(unreadcount.count);
     }
     if (this.feeds[unreadcount.id]) {
-      this.feeds[unreadcount.id].unread = unreadcount.count;
+      this.feeds[unreadcount.id].setUnread(unreadcount.count);
       this.unread += unreadcount.count;
     }
   }
+
+  this.folders['root'].setUnread(this.unread);
   return true;
+}
+
+/**
+* update unread count
+*/
+Listing.prototype.updateUnreadCount = function(item) {
+  item.link.innerText = item.title;
+  
+  if (item.unread > 0 && item.unread < this.max) {
+    item.link.innerText += ' ('+item.unread+')';
+  } else if (item.unread >= this.max) {
+    item.link.innerText += ' ('+this.max+'+)';      
+  }
+ 	item.link.onclick = item.reload.bind(item);
 }
 
 /**
@@ -334,7 +282,6 @@ Listing.prototype._saveUnreadCount = function(responseText) {
 */
 Listing.prototype.saveFolders = function(responseText) {
   var json = responseText.evalJSON()
-  debug.error('saveFolders');
 
   if (!json || !json.tags || !json.tags.length) {
     this.folders['root'] = this.folders['all'];
@@ -369,7 +316,6 @@ Listing.prototype.saveFolders = function(responseText) {
 Listing.prototype.savePreferences = function(responseText) {
   var json = responseText.evalJSON()
   var sort = false;
-  debug.error('savePreferences');
 
   if (json && json.prefs && json.prefs.length) {
     for (var i=0; i<json.prefs.length; i++) {
@@ -400,7 +346,6 @@ Listing.prototype.savePreferences = function(responseText) {
 */
 Listing.prototype.saveSortOrder = function(responseText) {
   var json = responseText.evalJSON()
-  debug.error('saveSortOrder');
 
   if (!json || !json.streamprefs) {
     return this.finish();
@@ -459,7 +404,7 @@ Listing.prototype.finish = function() {
   httpRequest.hideLoading();
 
   this.refresh();
-  this.draw();
+  gadget.draw();
   return true;
 }
 

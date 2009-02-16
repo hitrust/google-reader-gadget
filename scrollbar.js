@@ -4,6 +4,7 @@
 function CustomScrollbar(container) {
   this.halt = {}; 
   this.container = container;
+  this.saveY = false;
 
   scrollbarBar.onmousedown = this.startBar.bind(this);
   scrollbarBar.onmousemove = this.dragBar.bind(this);
@@ -55,6 +56,17 @@ CustomScrollbar.prototype.keydown = function() {
 /**
  * Shortcut functions
  */
+CustomScrollbar.prototype.scrollTo = function(y) {  
+  if (scrollbar.visible) {
+    scrollbarBar.y = y;
+    this.scroll();            
+  }
+}
+
+CustomScrollbar.prototype.postition = function(y) {  
+  return scrollbarBar.y;
+}
+
 CustomScrollbar.prototype.scrollBottom = function() {  
   if (scrollbar.visible) {
     scrollbarBar.y = this.max();
@@ -202,11 +214,20 @@ CustomScrollbar.prototype.ratio = function() {
 /**
  * Scroll content area
  */
-CustomScrollbar.prototype.scroll = function() { 
+CustomScrollbar.prototype.scroll = function(shouldRestore) { 
   var maxY = this.container.content.height - contentContainer.height;
   if (maxY < 0) maxY = 0;
 
   var newY = maxY * this.ratio(); 
+  
+  if (shouldRestore && this.saveY) {
+    this.container.content.y = -this.saveY;
+    return;
+  }
+  
+  if (newY) {
+    this.saveY = newY;
+  }
   
   if (newY > maxY) this.container.content.y = -maxY;
   else this.container.content.y = -newY;
@@ -286,11 +307,11 @@ CustomScrollbar.prototype.draw = function() {
   var newY = scrollRatio * scrollbarTrack.height + scrollbarUp.height;
   
   if (newY < this.min())
-      scrollbarBar.y = this.min();
+    scrollbarBar.y = this.min();
   else if (newY > this.max())
-      scrollbarBar.y = this.max();
+    scrollbarBar.y = this.max();
   else
     scrollbarBar.y = newY;  
     
-  this.scroll();        
+  this.scroll(true);        
 }
