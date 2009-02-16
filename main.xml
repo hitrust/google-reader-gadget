@@ -79,7 +79,7 @@
           background="images/blue-area-fill.gif"> 
 
           <label name="title" y="4" color="#ffffff" bold="true" font="helvetica" size="10" trimming="character-ellipsis">Feeds</label>
-          <a name="markRead" y="6" color="#ffffff" bold="true" font="helvetica" size="8" trimming="character-ellipsis" overColor="#e1eef6">Mark all as read</a>
+          <a name="markRead" y="6" color="#ffffff" bold="true" font="helvetica" size="8" trimming="character-ellipsis" overColor="#e1eef6" visible="false">Mark all as read</a>
 
           <div name="showItems" height="18" y="28">
             <label name="showLabel" color="#333333" bold="true" font="helvetica" size="8">Show</label>

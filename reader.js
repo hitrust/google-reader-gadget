@@ -60,6 +60,7 @@ Reader.prototype.showListing = function() {
   commandsFeeds.visible = false;
   commandsClose.visible = this.currentFeed ? true : false;
   commandsSearch.visible = false;
+  markRead.visible = false;
   
   showNewItems.innerText = 'updated';
   showAllItems.innerText = 'all';
@@ -90,6 +91,7 @@ Reader.prototype.showFeed = function() {
   commandsFeeds.visible = true;
   commandsClose.visible = false;
   commandsSearch.visible = true;
+  markRead.visible = true;
 
   listing.saveScroll();
 

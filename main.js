@@ -19,7 +19,14 @@ function Main() {
  * Called when there is feedback from the details view
  */
 Main.prototype.onDetailsViewFeedback = function(detailsViewFlags) {
-
+  if (detailsViewFlags == gddDetailsViewFlagNone) {
+    if (reader.currentFeed) {
+      reader.currentFeed.refresh();
+      if (feedContent.visible) {
+        reader.showFeed();          
+      }
+    }
+  }
 }
 
 /**
@@ -112,12 +119,8 @@ Main.prototype.draw = function() {
     contentShadowBottomRight.x = contentContainer.width;
     contentShadowBottomRight.y = contentContainer.height;
 
-    if (markRead.visible) {
-      markRead.x = titleStatusContent.width - labelCalcWidth(markRead) + 3;
-      title.width = markRead.x - 5;
-    } else {
-      title.width = titleStatusContent.width;
-    }
+    markRead.x = titleStatusContent.width - labelCalcWidth(markRead) + 3;
+    title.width = markRead.x - 5;
         
     showLine.draw();
     
