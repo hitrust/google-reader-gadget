@@ -3,11 +3,9 @@
  */
 function Details() {
   this.active = false;
-  this.starred = false;
-  this.shared = false;
-  this.unread = false;
-  this.tags = ["politics", "news", "cats", "environment"];
-//  this.tags = [];
+  this.article = false;
+  
+  this.tags = [];
 
   this.scrollbar = new CustomScrollbar(this);
   this.content = body;
@@ -18,12 +16,21 @@ function Details() {
  * Draw the details view when the view opens.
  */
 Details.prototype.onOpen = function() {
+  this.article = detailsViewData.getValue('article');
+
   this.doStar(true);
   this.doShare(true);
 
-  title.onclick = function() { framework.openUrl('http://google.com/'); }.bind(this)
+  title.innerText = this.article.title;
+  body.innerText = this.article.body;
+  subtitle.innerText = this.article.subtitle+' ';
+  date.innerText = new Date(this.article.updated*1000).ago()+' ago';
+  this.tags = this.article.tags || [];
+  
+  title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
   body.height = labelCalcHeight(body);
 
+  this.article.read = true;
   this.draw();
 }
 
@@ -142,7 +149,9 @@ Details.prototype.drawTag = function(x) {
     var link = div.children.item('link');
     var text = div.children.item('text');
 
-    link.innerText = 'Edit Tag';
+    if (this.tags.length) {
+      link.innerText = 'Edit Tag';
+    }
     text.visible = false;
   
     if (!x) {
@@ -229,15 +238,15 @@ Details.prototype.doStar = function(init) {
 
   if (init) {
     // don't toggle star on init
-    this.starred = !this.starred;
+    this.article.starred = !this.article.starred;
   }
 
-  if (this.starred) {
-    this.starred = false;
+  if (this.article.starred) {
+    this.article.starred = false;
     icon.src = 'images\\details-toolbar-star-off.png';
     link.innerText = 'Add star';  
   } else {
-    this.starred = true;
+    this.article.starred = true;
     icon.src = 'images\\details-toolbar-star-on.png';
     link.innerText = 'Remove star';  
   }
@@ -256,15 +265,15 @@ Details.prototype.doShare = function(init) {
 
   if (init) {
     // don't toggle star on init
-    this.shared = !this.shared;
+    this.article.shared = !this.article.shared;
   }
 
-  if (this.shared) {
-    this.shared = false;
+  if (this.article.shared) {
+    this.article.shared = false;
     icon.src = 'images\\details-toolbar-share-off.png';
     link.innerText = 'Share';  
   } else {
-    this.shared = true;
+    this.article.shared = true;
     icon.src = 'images\\details-toolbar-share-on.png';
     link.innerText = 'Unshare';  
   }
@@ -313,12 +322,12 @@ Details.prototype.doEmail = function() {
 Details.prototype.doUnread = function() {
   var icon = unread.children.item('icon');
 
-  if (this.unread) {
-    this.unread = false;
-    icon.src = 'images\\details-toolbar-unread-off.png';
-  } else {
-    this.unread = true;
+  if (this.article.read) {
+    this.article.read = false;
     icon.src = 'images\\details-toolbar-unread-on.png';
+  } else {
+    this.article.read = true;
+    icon.src = 'images\\details-toolbar-unread-off.png';
   }
   
   this.draw();

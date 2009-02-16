@@ -365,3 +365,52 @@ Date.DATE_ISO8601 = "Y-m-d\\TH:i:sO";
 Date.DATE_RFC2822 = "D, d M Y H:i:s O";
 // W3C       "2005-08-15T15:52:01+00:00"
 Date.DATE_W3C     = "Y-m-d\\TH:i:sP";
+
+
+// Formats according to amount of time ago
+Date.prototype.ago = function (long, now) {
+  if (!now) {
+    now = new Date();
+  }
+  
+	var secs = Math.round(now.getTime() / 1000) - 
+	           Math.round(this.getTime() / 1000);
+
+	if (secs <= 0 && !long) {
+    return '';
+	}
+
+  var time_ago = 0;
+
+	if (!time_ago)
+	{
+		time_ago = Math.floor(secs/31536000);
+		time_type = long ? 'year' : 'yr';
+	}
+	if (!time_ago)
+	{
+		time_ago = Math.floor(secs/2592000);
+		time_type = long ? 'month' : 'mon';
+	}
+	if (!time_ago)
+	{
+		time_ago = Math.floor(secs/86400);
+		time_type = long ? 'day' : 'day';
+	}
+	if (!time_ago)
+	{
+		time_ago = Math.floor(secs/3600);
+		time_type = long ? 'hour' : 'hr';
+	}
+	if (!time_ago) {
+		time_ago = Math.floor(secs/60);
+		time_type = long ? 'minute' : 'min';
+	}
+	if (!time_ago) {
+		time_ago = Math.floor(secs);
+		time_type = long ? 'second' : 'sec';
+	}
+	
+	return time_ago+" "+time_type+(long ? (time_ago != 1 ? 's' : '') : '');
+}
+

@@ -1,20 +1,17 @@
 <view width="505" height="336" onopen="detailsView.onOpen()" >
   <script src="constants.js" />
+  <script src="date.js" />
   <script src="util.js" />
   <script src="scrollbar.js" />
   <script src="details.js" />
   <div name="window" width="505" height="331" background="images\details-frame-background.png">
-    <a name="title" x="10" y="10" width="493" height="18" font="helvetia" size="10" bold="true" color="#0252a5" trimming="character-ellipsis" underline="false">Lebanon president visits Tehran and it's totally awesome</a>
-    <label name="subtitle" x="11" y="36" height="18" font="helvetia" size="8" color="#0252a5" trimming="character-ellipsis">BBC News | Middle East | World Edition -</label>
-    <label name="date" y="36" height="18" font="helvetia" size="8" color="#0252a5">1 hr ago</label>
+    <a name="title" x="10" y="10" width="493" height="18" font="helvetia" size="10" bold="true" color="#0252a5" trimming="character-ellipsis" underline="false" />
+    <label name="subtitle" x="11" y="36" height="18" font="helvetia" size="8" color="#0252a5" trimming="character-ellipsis" />
+    <label name="date" y="36" height="18" font="helvetia" size="8" color="#0252a5" />
     <div name="contentArea" x="14" y="56" width="478" height="241" background="#bfbfbf">    
       <div name="contentContainer" x="1" y="1" width="476" height="239" background="#ffffff">
         <div name="inner" x="5" y="5" width="468" height="228" background="#ffffff">
-          <label name="body" width="468" wordWrap="true" font="helvetia" size="8" color="#252525">
-    Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran.
-          
-Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran. Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahmoud Ahmadinejad in Tehran.
-          </label>
+          <label name="body" width="468" wordWrap="true" font="helvetia" size="8" color="#252525" />
         </div>
       </div>
       <div y="3" width="14" name="scrollbar" background="#FFFFFF">
@@ -118,7 +115,7 @@ Lebanese President Michel Suleiman holds talks with his Iranian counterpart Mahm
       </div>
       <div name="tag" height="23">
         <img name="icon" x="5" y="6" width="14" height="14" src="images\details-toolbar-tag.png" enabled="true" cursor="hand"/>
-        <a name="link" x="22" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Edit Tag</a>  
+        <a name="link" x="22" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Add Tag</a>  
         <label name="text" y="4" height="18" font="helvetica" size="8" color="#252525" visible="false"></label>          
       </div>
     </div>

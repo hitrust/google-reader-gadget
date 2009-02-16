@@ -61,19 +61,58 @@ Feed.prototype.parse = function() {
       
       this.feed.items[i].read = false;
       this.feed.items[i].starred = false;
+
+      this.feed.items[i].subtitle = (article.origin && article.origin.title) ? article.origin.title : this.title;
+      if (article.author) {
+        this.feed.items[i].subtitle += ' - '+article.author;
+      }
+      
       var content = article.content ? article.content : article.summary;
       
-      this.feed.items[i].snippet = content.content.stripTags().replace(new RegExp('[\n|\r|\\s]+', 'gm'), ' ').substring(0,400).trim();
+      this.feed.items[i].origin = (article.origin && article.origin.streamId) ? article.origin.streamId : this.id;
+
+      this.feed.items[i].snippet = content.content
+          .stripTags()
+          .replace(new RegExp('[\n|\r|\\s]+', 'gm'), ' ')
+          .substring(0,400)
+          .trim();
+          
+      // XXX: strip HTML from the article body for now
+      this.feed.items[i].body = content.content
+          .replace(new RegExp('</p>', 'igm'), "</p>\n\n")
+          .replace(new RegExp('<br[^>]+>', 'igm'), "<br />\n")
+          .stripTags()
+          .trim()
+          .replace(new RegExp('[\n|\r]{3,}', 'gm'), "\n\n");
+  
+      this.feed.items[i].tags = [];
       
       for (var j=0; j < article.categories.length ; j++) {
         var category = article.categories[j];
-        if (category.match(/\/read$/)) {
+        if (category.match(/user\/(.*?)\/read$/)) {
           this.feed.items[i].read = true;
         }
-        if (category.match(/\/starred$/)) {
+        if (category.match(/user\/(.*?)\/starred$/)) {
           this.feed.items[i].starred = true;
+        }
+        if (category.match(/user\/(.*?)\/broadcast$/)) {
+          this.feed.items[i].shared = true;
+        }        
+        var matches = category.match(/\/label\/([^\/]+)$/);
+        if (matches && matches[1]) {
+          this.feed.items[i].tags.push(matches[1]);
         }      
       }
+      
+      if (article.alternate && article.alternate.length) {
+        for (var j=0; j < article.alternate.length ; j++) {
+          if (article.alternate[j].href) {
+            this.feed.items[i].url = article.alternate[j].href;
+            break;
+          }
+        }
+      }
+
     } catch(e) {
       this.feed.items[i] = false;
     }
@@ -96,31 +135,46 @@ Feed.prototype.refresh = function() {
 
     var element = feedContent.appendElement('<div height="36" cursor="hand" enabled="true" />');
 
-    if (article.starred) {
-      element.appendElement('<div y="10" width="13" height="13" background="images/star-on.png" />');
-    } else {
-      element.appendElement('<div y="10" width="13" height="13" background="images/star-off.png" />');    
-    }
-
+    var star = element.appendElement('<div y="10" width="13" height="13" background="images/star-on.png" enabled="true" cursor="hand" />');
+    star.onclick = this.doStar.bind(this, star, this.feed.items[i]);
+    this.doStar(star, this.feed.items[i], true);
+    
     var titleLabel = element.appendElement('<label x="17" y="4" font="helvetica" size="8" bold="true" color="#161616" trimming="character-ellipsis"></label>');
     titleLabel.innerText = article.title;
 
     var snippetLabel = element.appendElement('<label x="17" y="17" font="helvetica" size="8" color="#19642c" trimming="character-ellipsis"></label>');
     snippetLabel.innerText = article.snippet;
 
-    element.onmouseover = function() { event.srcElement.background='#e1eef6'; }
-    element.onmouseout = function() { event.srcElement.background=''; }
+    element.onmouseover = function() { event.srcElement.background='#e1eef6'; }.bind(this);
+    element.onmouseout = function() { event.srcElement.background=''; }.bind(this);
 
-    element.onclick = function() { 
+    element.onclick = function(i) { 
       gadget.detailsView.SetContent('', undefined, 'details.xml', false, 0);
+      gadget.detailsView.detailsViewData.putValue('article', this.feed.items[i]);
       plugin.showDetailsView(gadget.detailsView, "", gddDetailsViewFlagNone, gadget.onDetailsViewFeedback.bind(gadget));
-    }.bind(this);
+    }.bind(this, i);
   
     feedContent.appendElement('<div height="1" background="#d7d7d7" />');
 
   }
 
 }
+
+/**
+ * Toggle article star
+ */
+Feed.prototype.doStar = function(star, article, init) {      
+
+  if (!init) {
+    article.starred = !article.starred;
+  }
+  if (article.starred) {
+    star.background = 'images/star-on.png';  
+  } else {
+    star.background = 'images/star-off.png';
+  }
+}
+
 
 /**
  * Draw feed contents
