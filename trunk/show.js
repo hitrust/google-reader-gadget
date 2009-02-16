@@ -10,6 +10,13 @@ function ShowLine() {
  * Draw show line
  */
 ShowLine.prototype.draw = function() {
+  showItems.width = titleStatusContent.width - (14 + reload.width);    
+  reload.x = showItems.width + 7;
+
+  showNewItems.x = labelCalcWidth(showLabel) - 2;
+  showItemsDivider.x = labelCalcWidth(showNewItems) + showNewItems.x;
+  showAllItems.x = showItemsDivider.x + showItemsDivider.width + 3;
+
   if (showNewItems.enabled) {
     showNewItems.color = '#0252a5';
     showNewItems.overColor = '#0252a5';
@@ -34,6 +41,14 @@ ShowLine.prototype.draw = function() {
 }
 
 /**
+ * Update unread count
+ */
+ShowLine.prototype.update = function() {
+  var number = reader.currentFeed.unread >= listing.max ? listing.max+'+' : reader.currentFeed.unread;
+  showNewItems.innerText = number+' new item'+(reader.currentFeed.unread == 1 ? '' : 's');
+}
+
+/**
  * Toggle what to show
  */
 ShowLine.prototype.show = function(what) {
@@ -52,6 +67,7 @@ ShowLine.prototype.show = function(what) {
   if (reader.currentFeed) {
     reader.currentFeed.show = what;
     reader.currentFeed.refresh();
+    reader.scrollbar.saveY = false;
     reader.draw();  
   }
   this.draw();

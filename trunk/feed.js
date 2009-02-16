@@ -8,19 +8,28 @@ function Feed(id, title) {
   this.unread = 0;
   this.feed = {};
   this.show = 'all';
+  this.scroll = false;
+  this.link = false;
+  this.folders = {};
+}
+
+/**
+ * Set unread count
+ */
+Feed.prototype.setUnread = function(x) {
+  this.unread = x;
 }
 
 /**
 * Load feed data
 */
 Feed.prototype.reload = function() {
-  if (!this.id) {
-    errorMessage.display(ERROR_FEED_NOT_FOUND);
-    return false;
-  }
-  
+  if (loading.visible) return false;
+
+  this.scroll = false;
+    
   httpRequest.host = CONNECTION.FEED_HOST;
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + this.id; 
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + this.id;
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect('', this.getSuccess.bind(this), this.getError.bind(this));
   return true;
@@ -36,27 +45,39 @@ Feed.prototype.isDisplayed = function() {
 }
 
 /**
+ * Save the scroll position
+ */
+Feed.prototype.saveScroll = function() {
+  this.scroll = reader.scrollbar.postition();
+}
+
+/**
  * Parse feed contents
  */
 Feed.prototype.parse = function() {
   for (var i=0; i < this.feed.items.length ; i++) {
-    var article = this.feed.items[i];
-    
-    this.feed.items[i].read = false;
-    this.feed.items[i].starred = false;
-    
-    this.feed.items[i].snippet = article.content.content.stripTags().replace(new RegExp('[\n|\r|\\s]+', 'gm'), ' ').substring(0,400).trim();
-    
-    for (var j=0; j < article.categories.length ; j++) {
-      var category = article.categories[j];
-      if (category.match(/\/read$/)) {
-        this.feed.items[i].read = true;
+    try {
+      var article = this.feed.items[i];
+      
+      this.feed.items[i].read = false;
+      this.feed.items[i].starred = false;
+      var content = article.content ? article.content : article.summary;
+      
+      this.feed.items[i].snippet = content.content.stripTags().replace(new RegExp('[\n|\r|\\s]+', 'gm'), ' ').substring(0,400).trim();
+      
+      for (var j=0; j < article.categories.length ; j++) {
+        var category = article.categories[j];
+        if (category.match(/\/read$/)) {
+          this.feed.items[i].read = true;
+        }
+        if (category.match(/\/starred$/)) {
+          this.feed.items[i].starred = true;
+        }      
       }
-      if (category.match(/\/starred$/)) {
-        this.feed.items[i].starred = true;
-      }      
+    } catch(e) {
+      this.feed.items[i] = false;
     }
-  }
+  }  
 }
 
 /**
@@ -66,11 +87,13 @@ Feed.prototype.refresh = function() {
   if (!this.feed.items || !this.feed.items.length) return;
 
   feedContent.removeAllElements();
-  
+
   for (var i=0; i < this.feed.items.length ; i++) {
     var article = this.feed.items[i];
+
+    if (!article) continue;
     if (article.read && this.show != 'all') continue;
-    
+
     var element = feedContent.appendElement('<div height="36" cursor="hand" enabled="true" />');
 
     if (article.starred) {
@@ -130,20 +153,13 @@ Feed.prototype.getSuccess = function(responseText) {
     errorMessage.display(ERROR_MALFORMED_FEED);
     return; 
   }
-  /*
-  try {
-    if (!responseText.trim()) throw new Exception();    
-    this.feed = eval('(' + responseText + ')');    
-  } catch (e) {  
-    errorMessage.display(ERROR_MALFORMED_FEED);
-    return;
-  }
-  */
-  if (this.isDisplayed()) {
-    this.parse();
-    this.refresh();
-    reader.draw();
-  }
+
+  this.parse();
+  this.refresh();
+  this.draw();
+  
+  reader.currentFeed = this;
+  reader.showFeed();
 }
 
 /**

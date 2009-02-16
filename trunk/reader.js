@@ -9,7 +9,7 @@ function Reader() {
   
   commandsClose.onclick = this.showFeed.bind(this);
   commandsFeeds.onclick = this.showListing.bind(this);
-  reload.onclick = this.reload.bind(this);
+  reload.onclick = this.reload.bind(this);  
 }
 
 /**
@@ -53,28 +53,58 @@ Reader.prototype.reload = function() {
 * Show feed listing
 */
 Reader.prototype.showListing = function() {
+  title.innerText = 'Feeds';
+
   feedContent.visible = false;
   listingContent.visible = true;
   commandsFeeds.visible = false;
   commandsClose.visible = this.currentFeed ? true : false;
   commandsSearch.visible = false;
+  
+  showNewItems.innerText = 'updated';
+  showAllItems.innerText = 'all';
+  showLine.draw();
+  
+  if (this.currentFeed) {
+    this.currentFeed.saveScroll();
+  }
 
   this.content = listingContent;
   this.draw();
+
+  if (listing.scroll) {
+    this.scrollbar.scrollTo(listing.scroll);
+  }
 }
 
 /**
 * Show individual feed
 */
 Reader.prototype.showFeed = function() {
+  if (!this.currentFeed) return;
+  
+  title.innerText = this.currentFeed.title;
+
   feedContent.visible = true;
   listingContent.visible = false;
   commandsFeeds.visible = true;
   commandsClose.visible = false;
   commandsSearch.visible = true;
 
+  listing.saveScroll();
+
+  showLine.update();
+  showAllItems.innerText = 'all items';
+  showLine.show(this.currentFeed.show);
+
   this.content = feedContent;
   this.draw();
+  
+  if (this.currentFeed.scroll) {
+    this.scrollbar.scrollTo(this.currentFeed.scroll);
+  } else {
+    this.scrollbar.scrollTop();
+  }
 }
 
 /**
