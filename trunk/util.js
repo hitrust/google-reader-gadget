@@ -20,12 +20,32 @@ Function.prototype.bind = function(context) {
 Object.prototype.toQueryString = function() {
   var str = [];
   for (var key in this) {
-    var type = typeof this[key];
+    var type = _typeOf(this[key]);
     if (type == 'boolean' || type == 'number' || type == 'string') {
       str.push(key + '=' + encodeURIComponent(this[key].toString()));
+    } else if (type == 'array') {
+      for (var i=0; i<this[key].length; i++) {
+        str.push(key + '=' + encodeURIComponent(this[key][i].toString()));              
+      }
     }
   }
   return str.join('&');
+}
+
+function _typeOf(value) {
+    var s = typeof value;
+    if (s === 'object') {
+        if (value) {
+            if (typeof value.length === 'number' &&
+                    !(value.propertyIsEnumerable('length')) &&
+                    typeof value.splice === 'function') {
+                s = 'array';
+            }
+        } else {
+            s = 'null';
+        }
+    }
+    return s;
 }
 
 // Strips whitespace from beginning and end of string

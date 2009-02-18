@@ -1,7 +1,10 @@
 <view width="505" height="336" onopen="detailsView.onOpen()" >
   <script src="constants.js" />
   <script src="date.js" />
+  <script src="httpRequest.js" />  
+  <script src="errorMessage.js" />  
   <script src="util.js" />
+  <script src="edit.js" />
   <script src="scrollbar.js" />
   <script src="details.js" />
   <div name="window" width="505" height="331" background="images\details-frame-background.png">
@@ -128,7 +131,7 @@
         </div>
         <label x="6" y="29" font="helvetica" size="8" color="#898989">Separate tags by commas</label>
         <button name="save" caption="Save" x="7" y="49" width="48" height="22" font="arial" size="9" image="images/details-button-save.png" cursor="hand" />
-        <button name="cancel" caption="Cancel" x="57" y="49" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" overImage="images/details-button-cancel-over.png" cursor="hand" />
+        <button name="cancel" caption="Cancel" x="57" y="49" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" cursor="hand" />
       </div>
     </div>        
   </div>

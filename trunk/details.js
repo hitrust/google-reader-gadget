@@ -16,7 +16,14 @@ function Details() {
  * Draw the details view when the view opens.
  */
 Details.prototype.onOpen = function() {
+  loginSession = detailsViewData.getValue('loginSession');
   this.article = detailsViewData.getValue('article');
+  this.listing = detailsViewData.getValue('listing');
+
+  this.article.read = true;  
+
+  this.editAPI = new EditAPI(this.article);
+  this.editAPI.call('MarkRead');
 
   this.doStar(true);
   this.doShare(true);
@@ -30,8 +37,13 @@ Details.prototype.onOpen = function() {
   title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
   body.height = labelCalcHeight(body);
 
-  this.article.read = true;
+  if (this.listing.userInfo) {
+    fromArea.innerText = this.listing.userInfo.userName+' <'+this.listing.userInfo.userEmail+'>';
+  }
+
   this.draw();
+  
+  errorMessage.setup(contentArea);
 }
 
 /**
@@ -166,7 +178,10 @@ Details.prototype.drawTag = function(x) {
         text.visible = true;    
         div.width += labelCalcWidth(text) - 3;
       }
-    }       
+    }
+    if (!this.tags.length) {
+      link.innerText = 'Add Tag';    
+    }
   }
 }
 
@@ -244,11 +259,13 @@ Details.prototype.doStar = function(init) {
   if (this.article.starred) {
     this.article.starred = false;
     icon.src = 'images\\details-toolbar-star-off.png';
-    link.innerText = 'Add star';  
+    link.innerText = 'Add star';
+    this.editAPI.call('Unstar');  
   } else {
     this.article.starred = true;
     icon.src = 'images\\details-toolbar-star-on.png';
     link.innerText = 'Remove star';  
+    this.editAPI.call('Star');      
   }
   
   if (!init) {
@@ -272,10 +289,12 @@ Details.prototype.doShare = function(init) {
     this.article.shared = false;
     icon.src = 'images\\details-toolbar-share-off.png';
     link.innerText = 'Share';  
+    this.editAPI.call('Unshare');  
   } else {
     this.article.shared = true;
     icon.src = 'images\\details-toolbar-share-on.png';
-    link.innerText = 'Unshare';  
+    link.innerText = 'Unshare';
+    this.editAPI.call('Share');    
   }
   
   if (!init) {
@@ -290,6 +309,10 @@ Details.prototype.doNote = function() {
   noteField.value = '';
   noteCheck.value = true;
 
+  var post = notePane.children.item('pane').children.item('post');
+  post.onclick = this.notePost.bind(this);
+
+
   this.toggle(note);
   
   noteField.focus();
@@ -300,7 +323,7 @@ Details.prototype.doNote = function() {
  */
 Details.prototype.doEmail = function() {
   toField.value = '';
-  subjectField.value = '';
+  subjectField.value = this.article.title;
   emailField.value = '';
   emailCheck.value = true;
 
@@ -308,7 +331,7 @@ Details.prototype.doEmail = function() {
   var cancel = emailPane.children.item('pane').children.item('cancel');
   
   cancel.onclick = this.emailCancel.bind(this);  
-//  send.onclick = this.emailSend.bind(this);
+  send.onclick = this.emailSend.bind(this);
 
 
   this.toggle(email);
@@ -325,9 +348,11 @@ Details.prototype.doUnread = function() {
   if (this.article.read) {
     this.article.read = false;
     icon.src = 'images\\details-toolbar-unread-on.png';
+    this.editAPI.call('MarkUnread');
   } else {
     this.article.read = true;
     icon.src = 'images\\details-toolbar-unread-off.png';
+    this.editAPI.call('MarkRead');
   }
   
   this.draw();
@@ -364,7 +389,9 @@ Details.prototype.tagSave = function() {
     if (t && this.tags.indexOf(t) == -1) {
       this.tags.push(t);
     }
-  }
+  }  
+  this.editAPI.call('Tags', this.tags);
+  this.article.tags = this.tags;
   
   tagPane.visible = false; 
   this.drawTag();
@@ -400,5 +427,23 @@ Details.prototype.emailCancel = function() {
   this.toggle(email);
 }
 
+/**
+ * Send email
+ */
+Details.prototype.emailSend = function() {
+  this.editAPI.call('SendEmail', toField.value, subjectField.value, emailField.value, emailCheck.value);
+  this.toggle(email);
+  errorMessage.display(ALERT_EMAIL_SENT);  
+}
 
+/**
+ * Post share with note
+ */
+Details.prototype.notePost = function() {
+  this.editAPI.call('ShareWithNote', noteField.value, noteCheck.value);
+  this.toggle(note);
+  errorMessage.display(noteCheck.value ? ALERT_NOTE_ADDED_AND_SHARED : ALERT_NOTE_ADDED);
+}
+
+var loginSession;
 var detailsView = new Details();

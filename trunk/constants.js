@@ -17,13 +17,16 @@ var CONNECTION = {
   AUTH_TYPE: 'HOSTED_OR_GOOGLE',  
   READER_HOST: 'www.google.com',  
   READER_URL: 'http://www.google.com/reader/api/0/',
+  EMAIL_URL: 'http://www.google.com/reader/email-this',
   STREAM_PREFIX: 'stream/contents/',
   SEARCH_URL: '&q=',
   API_SUBSCRIPTIONS: 'subscription/list?output=json',
   API_UNREADCOUNT: 'unread-count?all=true&output=json',  
   API_SORTORDER: 'preference/stream/list?output=json',
   API_PREFERENCES: 'preference/list?output=json',
-  API_FOLDERS: 'tag/list?output=json'
+  API_FOLDERS: 'tag/list?output=json',
+  API_USER_INFO: 'user-info?output=json',
+  API_FRIEND_LIST: 'friend/list?output=json'
 };
 
 var UI = {
@@ -31,13 +34,6 @@ var UI = {
   MIN_HEIGHT: 200,  
   MIN_DATE_WIDTH: 85,
   ERROR_MESSAGE_TIMEOUT: 3000
-};
-
-var UPLOAD_STATUS = {
-  WAITING: false,
-  LOADING: 'loading',
-  SUCCESS: 'success',
-  ERROR: 'error'
 };
 
 var FILE_TYPES = {
