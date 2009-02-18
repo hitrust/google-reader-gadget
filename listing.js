@@ -153,9 +153,9 @@ Listing.prototype.reload = function() {
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.overrideLoading = true;
 
-  // request the subscriptions
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_SUBSCRIPTIONS;
-  httpRequest.connect('', this.saveSubscriptions.bind(this), this.getError.bind(this));
+  // request the user info
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_USER_INFO;
+  httpRequest.connect('', this.saveUserInfo.bind(this), this.getError.bind(this));
 }
 
 /**
@@ -164,6 +164,34 @@ Listing.prototype.reload = function() {
 Listing.prototype.getError = function() {
   httpRequest.hideLoading();
   debug.error('error!');
+}
+
+/**
+* save user info
+*/
+Listing.prototype.saveUserInfo = function(responseText) {
+debug.error(responseText);
+  var json = responseText.evalJSON()
+
+  if (!json || !json.userName || !json.userEmail) {
+    this.getError();
+    return false;     
+  }
+  
+  this.userInfo = json;
+
+  // request the friends list
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_FRIEND_LIST;
+  httpRequest.connect('', this.saveFriendsList.bind(this), this.getError.bind(this));
+}
+
+/**
+* save friends list
+*/
+Listing.prototype.saveFriendsList = function(responseText) {
+  // request the subscriptions
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_SUBSCRIPTIONS;
+  httpRequest.connect('', this.saveSubscriptions.bind(this), this.getError.bind(this));
 }
 
 

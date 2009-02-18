@@ -4,7 +4,8 @@
   <script src="util.js" />    
   <script src="date.js" />      
   <script src="httpRequest.js" />  
-  <script src="errorMessage.js" />  
+  <script src="errorMessage.js" /> 
+  <script src="edit.js" /> 
   <script src="search.js" />
   <script src="show.js" />
   <script src="scrollbar.js" />  

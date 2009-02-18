@@ -105,19 +105,17 @@
     This service is unavailable.
   </ERROR_SERVICE_UNAVAILABLE>
   
-  <!-- Upload error messages -->
-  <ERROR_UPLOAD_CORRUPT>
-    file is corrupt
-  </ERROR_UPLOAD_CORRUPT>
-  <ERROR_UPLOAD_TYPE>
-    unrecognized file type
-  </ERROR_UPLOAD_TYPE>
-  <ERROR_UPLOAD_EXPIRED>
-    login session expired
-  </ERROR_UPLOAD_EXPIRED>
-  <ERROR_UPLOAD_NETWORK>
-    a network error occurred
-  </ERROR_UPLOAD_NETWORK>
+  <!-- Non error alerts -->
+
+  <ALERT_NOTE_ADDED_AND_SHARED>
+    Your note has been added and shared.
+  </ALERT_NOTE_ADDED_AND_SHARED>
+  <ALERT_NOTE_ADDED>
+    Your note has been added.
+  </ALERT_NOTE_ADDED>
+  <ALERT_EMAIL_SENT>
+    Your email has been sent.
+  </ALERT_EMAIL_SENT>
   
   <!-- Main view -->
   <COMMAND_FEEDS>Feeds</COMMAND_FEEDS>

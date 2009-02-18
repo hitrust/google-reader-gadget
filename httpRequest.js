@@ -96,6 +96,16 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
     stream = null;
   }
 
+  var now = new Date();
+  var suffix = 'client='+REPORTED_CLIENT_NAME+'&ck='+now.getTime();
+  if (this.url.indexOf('?') == -1) {
+    this.url += '?'+suffix;
+  } else if (this.url.indexOf('?') == this.url.length-1) {
+    this.url += suffix;
+  } else {
+    this.url += '&'+suffix; 
+  }
+
   this.handler = handler;
   this.failedHandler = failedHandler;
   this.packet.abort();
@@ -112,7 +122,7 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
   // custom headers
   for (var key in this.headers) {
     if (typeof this.headers[key] == 'string') {
-      this.packet.setRequestHeader(key, this.headers[key]);    
+      this.packet.setRequestHeader(key, this.headers[key]);
     }
   }
   for (var key in headers) {
@@ -202,7 +212,7 @@ HTTPRequest.prototype.receivedData = function() {
   this.clearTimeout();  
   setTimeout(HTTPRequest.finishedGracePeriod, CONNECTION.TIME_BETWEEN_REQUESTS);
   if (this.packet.status < 200 || this.packet.status >= 300) {
-    debug.error('A transfer error has occured !');
+    debug.error('A transfer error has occured! Error = '+this.packet.status);
     if (this.overrideLoading) {
       this.hideLoading();  
     }

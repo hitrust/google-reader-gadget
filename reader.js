@@ -46,7 +46,11 @@ Reader.prototype.reset = function() {
 */
 Reader.prototype.reload = function() {
   if (loading.visible) return;
-  listing.reload();
+  if (feedContent.visible && this.currentFeed) {
+    this.currentFeed.reload();
+  } else if (listingContent.visible) {
+    listing.reload();
+  }
 }
 
 /**

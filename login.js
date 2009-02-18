@@ -65,7 +65,7 @@ LoginSession.prototype.login = function() {
  */
 LoginSession.prototype.loginSuccess = function(responseText) {
   this.token = this.getCookie('SID', responseText);
-  
+
   if (this.token) {
     username.innerText = this.username.toLowerCase();
     username.visible = true;
