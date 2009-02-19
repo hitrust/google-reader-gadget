@@ -241,16 +241,16 @@ Listing.prototype.saveSubscriptions = function(responseText) {
   
   // special folders and feeds
   
-  this.folders['root'] = new Folder('user/-/state/com.google/reading-list', 'All items');
+  this.folders['root'] = new Folder('user/-/state/com.google/reading-list', STRINGS.ALL_ITEMS);
   this.folders['root'].link = allItems;
   this.folders['root'].setUnread(0);
   
-  this.folders['all'] = new Folder('user/-/state/com.google/reading-list', 'All items');
+  this.folders['all'] = new Folder('user/-/state/com.google/reading-list', STRINGS.ALL_ITEMS);
   this.folders['all'].link = allItems;
   this.folders['all'].setUnread(0);
 
   if (!this.folders['starred']) {
-    this.folders['starred'] = new Folder('user/-/state/com.google/starred', 'Starred items');
+    this.folders['starred'] = new Folder('user/-/state/com.google/starred', STRINGS.STARRED_ITEMS);
     this.folders['starred'].link = starredItems;
   }
   this.folders['starred'].setAlwaysShowUnread();
@@ -258,7 +258,7 @@ Listing.prototype.saveSubscriptions = function(responseText) {
 
   if (this.friends && this.friends.length) {
     if (!this.folders['friends']) {
-      this.folders['friends'] = new Folder('user/-/state/com.google/broadcast-friends', "Friends' shared items");
+      this.folders['friends'] = new Folder('user/-/state/com.google/broadcast-friends', STRINGS.FRIENDS_SHARED_ITEMS);
       this.folders['friends'].link = friendsItems; 
     }
     this.folders['friends'].setUnread(0);
@@ -272,21 +272,21 @@ Listing.prototype.saveSubscriptions = function(responseText) {
   }
 
   if (!this.folders['your']) {
-    this.folders['your'] = new Folder('user/-/state/com.google/self', 'Your stuff');
+    this.folders['your'] = new Folder('user/-/state/com.google/self', STRINGS.YOUR_STUFF);
     this.folders['your'].link = yourStuff;
   }
   this.folders['your'].setAlwaysShowUnread();
   this.folders['your'].setUnread(0);
 
   if (!this.feeds['shared']) {
-    this.feeds['shared'] = new Feed('user/-/state/com.google/broadcast', 'Shared items');
+    this.feeds['shared'] = new Feed('user/-/state/com.google/broadcast', STRINGS.SHARED_ITEMS);
     this.feeds['shared'].link = sharedItems;
   }
   this.feeds['shared'].setAlwaysShowUnread();
   this.feeds['shared'].setUnread(0);
 
   if (!this.feeds['notes']) {
-    this.feeds['notes'] = new Feed('user/-/state/com.google/created', 'Notes');
+    this.feeds['notes'] = new Feed('user/-/state/com.google/created', STRINGS.NOTES);
     this.feeds['notes'].link = yourNotes;
   }
   this.feeds['notes'].setAlwaysShowUnread();
@@ -363,7 +363,7 @@ Listing.prototype.saveUnreadCount = function(reload, responseText) {
 Listing.prototype._saveUnreadCount = function(responseText) {
   var json = responseText.evalJSON()
 
-  if (!json || !json.unreadcounts || !json.unreadcounts.length) {
+  if (!json || !json.unreadcounts) {
     return false; 
   }
   
@@ -526,7 +526,8 @@ Listing.prototype.saveSortOrder = function(responseText) {
     if (_typeOf(ordering[id]) == "function" ||
         !ordering[id].length) continue;
 
-    if (this.folders[id]) {   
+    if (this.folders[id]) {  
+      var saveItems = this.folders[id].items; 
       this.folders[id].reset();
 
       var len = ordering[id].length / 8;
@@ -541,7 +542,13 @@ Listing.prototype.saveSortOrder = function(responseText) {
         } else {
           this.folders[id].push(sortid);      
         }
-      }    
+      }
+      for (var i=0; i<saveItems.length; i++) {
+        var sortid = saveItems[i];
+        if (this.folders[id].items.indexOf(sortid) == -1) {
+          this.folders[id].push(sortid);      
+        }
+      }
     }
   }
 

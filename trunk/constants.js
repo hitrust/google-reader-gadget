@@ -19,7 +19,6 @@ var CONNECTION = {
   READER_URL: 'http://www.google.com/reader/api/0/',
   EMAIL_URL: 'http://www.google.com/reader/email-this',
   STREAM_PREFIX: 'stream/contents/',
-  SEARCH_URL: '&q=',
   API_SUBSCRIPTIONS: 'subscription/list?output=json',
   API_UNREADCOUNT: 'unread-count?all=true&output=json',  
   API_SORTORDER: 'preference/stream/list?output=json',

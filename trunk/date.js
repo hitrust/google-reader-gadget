@@ -385,32 +385,55 @@ Date.prototype.ago = function (long, now) {
 	if (!time_ago)
 	{
 		time_ago = Math.floor(secs/31536000);
-		time_type = long ? 'year' : 'yr';
+		time_type = long ? STRINGS.DATE_YEAR_LONG : STRINGS.DATE_YEAR_SHORT;
 	}
 	if (!time_ago)
 	{
 		time_ago = Math.floor(secs/2592000);
-		time_type = long ? 'month' : 'mon';
+		time_type = long ? STRINGS.DATE_MONTH_LONG : STRINGS.DATE_MONTH_SHORT;
 	}
 	if (!time_ago)
 	{
 		time_ago = Math.floor(secs/86400);
-		time_type = long ? 'day' : 'day';
+		time_type = long ? STRINGS.DATE_DAY_LONG : STRINGS.DATE_DAY_SHORT;
 	}
 	if (!time_ago)
 	{
 		time_ago = Math.floor(secs/3600);
-		time_type = long ? 'hour' : 'hr';
+		time_type = long ? STRINGS.DATE_HOUR_LONG : STRINGS.DATE_HOUR_SHORT;
 	}
 	if (!time_ago) {
 		time_ago = Math.floor(secs/60);
-		time_type = long ? 'minute' : 'min';
+		time_type = long ? STRINGS.DATE_MINUTE_LONG : STRINGS.DATE_MINUTE_SHORT;
 	}
 	if (!time_ago) {
 		time_ago = Math.floor(secs);
-		time_type = long ? 'second' : 'sec';
+		time_type = long ? STRINGS.DATE_SECOND_LONG : STRINGS.DATE_SECOND_SHORT;
 	}
 	
-	return time_ago+" "+time_type+(long ? (time_ago != 1 ? 's' : '') : '');
+	if (long && time_ago != 1) {
+	 switch (time_type) {
+	   case STRINGS.DATE_YEAR_LONG:
+	     time_type = STRINGS.DATE_YEARS_LONG;
+	     break;
+	   case STRINGS.DATE_MONTH_LONG:
+	     time_type = STRINGS.DATE_MONTHS_LONG;	   
+	     break;	   
+	   case STRINGS.DATE_DAY_LONG:
+	     time_type = STRINGS.DATE_DAYS_LONG;	   	   
+	     break;	   
+	   case STRINGS.DATE_HOUR_LONG:
+	     time_type = STRINGS.DATE_HOURS_LONG;	   	   
+	     break;	   
+	   case STRINGS.DATE_MINUTE_LONG:
+	     time_type = STRINGS.DATE_MINUTES_LONG;	   	   
+	     break;	   
+	   case STRINGS.DATE_SECOND_LONG:
+	     time_type = STRINGS.DATE_SECONDS_LONG;	   	   
+	     break;	   
+	 }
+	}
+	
+	return time_ago+" "+time_type;
 }
 
