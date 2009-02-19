@@ -21,9 +21,27 @@ function Main() {
 Main.prototype.onDetailsViewFeedback = function(detailsViewFlags) {
   if (detailsViewFlags == gddDetailsViewFlagNone) {
     if (reader.currentFeed) {
-      reader.currentFeed.refresh();
+
+      if (reader.currentFeed.unread < 0) {
+        reader.currentFeed.unread = 0;
+      }
+      if (reader.currentFeed.unread >= listing.max-1) {
+        reader.currentFeed.unread = listing.max;
+      }
+      
+      reader.currentFeed.saveScroll();
+      reader.currentFeed.refresh();  
+    
       if (feedContent.visible) {
-        reader.showFeed();          
+        showLine.update();        
+        reader.showFeed();
+
+        if (reader.currentFeed.scroll) {
+          reader.scrollbar.scrollTo(reader.currentFeed.scroll);
+        } else {
+          reader.scrollbar.scrollTop();
+        }
+          
       }
     }
   }
@@ -33,7 +51,7 @@ Main.prototype.onDetailsViewFeedback = function(detailsViewFlags) {
  * Draw the gadget when the view opens.
  */
 Main.prototype.onOpen = function() {
-  view.onsize = this.draw.bind(this);   
+  view.onsize = this.resize.bind(this);   
   view.onsizing = this.sizing.bind(this);     
   loginSession.autologin();
   this.draw();  
@@ -52,7 +70,23 @@ Main.prototype.sizing = function() {
 }
 
 /**
- * Resize the gadget.
+ * Draw the gadget.
+ */
+Main.prototype.resize = function() {
+  if (listingContent.visible) {
+    listing.saveScroll();
+  }
+
+  this.draw();
+  
+  if (listingContent.visible) {
+    reader.scrollbar.scrollTo(listing.scroll);
+  }
+}
+
+
+/**
+ * Draw the gadget.
  */
 Main.prototype.draw = function() {
     

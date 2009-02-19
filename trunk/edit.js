@@ -1,7 +1,7 @@
 /**
  * Constructor for Edit api functions
  */
-function EditAPI(article) {
+function EditAPI(item) {
   try {
     this.gadget = gadget;
   } catch (e) {}
@@ -11,7 +11,7 @@ function EditAPI(article) {
   } catch (e) {}
 
   this.token = this.gadget ? this.gadget.token : false;
-  this.article = article;
+  this.item = item;
   this.halt = false;
   this.command = false;
 }
@@ -46,7 +46,7 @@ EditAPI.prototype.editSendEmail = function(to, subject, body, ccME) {
   this.command = false;
   this.token = false;
   
-  this.data = { 'i': this.article.id,
+  this.data = { 'i': this.item.id,
                'emailTo': to,
                'comment': body,
                'subject': subject,
@@ -62,12 +62,12 @@ EditAPI.prototype.editShareWithNote = function(annotation, share) {
 
   this.command = 'item/edit';
 
-  this.data = { 'title': this.article.title,
-               'snippet': this.article.body,
-               'url': this.article.url,
-               'srcUrl': this.article.srcUrl,
-               'srcTitle': this.article.srcTitle,
-               'snippet' : this.article.rawBody,
+  this.data = { 'title': this.item.title,
+               'snippet': this.item.body,
+               'url': this.item.url,
+               'srcUrl': this.item.srcUrl,
+               'srcTitle': this.item.srcTitle,
+               'snippet' : this.item.rawBody,
                'annotation' : annotation,
                'share' : share,
                'linkify' : false
@@ -84,20 +84,20 @@ EditAPI.prototype.editTags = function(tags) {
   var delTags = [];
   
   for (var i=0; i<tags.length; i++) {
-    if (this.article.tags.indexOf(tags[i]) == -1) {
+    if (this.item.tags.indexOf(tags[i]) == -1) {
       addTags.push('user/-/label/'+tags[i]);
     }
   }
 
-  for (var i=0; i<this.article.tags.length; i++) {
-    if (tags.indexOf(this.article.tags[i]) == -1) {
-      delTags.push('user/-/label/'+this.article.tags[i]);
+  for (var i=0; i<this.item.tags.length; i++) {
+    if (tags.indexOf(this.item.tags[i]) == -1) {
+      delTags.push('user/-/label/'+this.item.tags[i]);
     }
   }
 
   this.command = 'edit-tag';
   
-  this.data = { 'i': this.article.id,
+  this.data = { 'i': this.item.id,
                'a': addTags,
                'r': delTags,
                'ac': 'edit'
@@ -112,7 +112,7 @@ EditAPI.prototype.editShare = function() {
 
   this.command = 'edit-tag';
   
-  this.data = { 'i': this.article.id, 
+  this.data = { 'i': this.item.id, 
                'a': 'user/-/state/com.google/broadcast', 
                'ac': 'edit'
              };             
@@ -125,7 +125,7 @@ EditAPI.prototype.editUnshare = function() {
 
   this.command = 'edit-tag';
   
-  this.data = { 'i': this.article.id, 
+  this.data = { 'i': this.item.id, 
                'r': 'user/-/state/com.google/broadcast', 
                'ac': 'edit'
              };
@@ -138,7 +138,7 @@ EditAPI.prototype.editStar = function() {
 
   this.command = 'edit-tag';
   
-  this.data = { 'i': this.article.id, 
+  this.data = { 'i': this.item.id, 
                'a': 'user/-/state/com.google/starred', 
                'ac': 'edit'
              };
@@ -151,12 +151,23 @@ EditAPI.prototype.editUnstar = function() {
 
   this.command = 'edit-tag';
   
-  this.data = { 'i': this.article.id, 
+  this.data = { 'i': this.item.id, 
                'r': 'user/-/state/com.google/starred', 
                'ac': 'edit'
              };
 }
 
+/**
+ * Mark feed as read
+ */
+EditAPI.prototype.editMarkFeedRead = function() {
+
+  this.command = 'mark-all-as-read';
+
+  this.data = { 's': this.item.id, 
+               't': this.item.title
+             };
+}
 
 /**
  * Mark message as read
@@ -165,7 +176,7 @@ EditAPI.prototype.editMarkRead = function() {
 
   this.command = 'edit-tag';
 
-  this.data = { 'i': this.article.id, 
+  this.data = { 'i': this.item.id, 
                'a': 'user/-/state/com.google/read', 
                'ac': 'edit'
              };
@@ -178,7 +189,7 @@ EditAPI.prototype.editMarkUnread = function() {
 
   this.command = 'edit-tag';
 
-  this.data = { 'i': this.article.id, 
+  this.data = { 'i': this.item.id, 
                'r': 'user/-/state/com.google/read', 
                'ac': 'edit'
              };
@@ -199,11 +210,12 @@ EditAPI.prototype._apiCall = function(secondTry) {
   this.data.T = this.token;
 
   var successCallback = secondTry ? this.getAPISuccess2.bind(this) : this.getAPISuccess.bind(this);
+  var errorCallback = secondTry ? this.getAPIError2.bind(this) : this.getAPIError.bind(this);
 
-  httpRequest.host = CONNECTION.FEED_HOST;
+  httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.url = this.command ? CONNECTION.READER_URL + this.command : this.url
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
-  httpRequest.connect(this.data.toQueryString(), successCallback, this.getError.bind(this));
+  httpRequest.connect(this.data.toQueryString(), successCallback, errorCallback);
 }
 
 /**
@@ -212,7 +224,7 @@ EditAPI.prototype._apiCall = function(secondTry) {
 EditAPI.prototype.getToken = function(secondTry) {
   var successCallback = secondTry ? this.getTokenSuccess2.bind(this) : this.getTokenSuccess.bind(this);
 
-  httpRequest.host = CONNECTION.FEED_HOST;
+  httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.url = CONNECTION.READER_URL + 'token';
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect('', successCallback, this.getError.bind(this));
@@ -275,3 +287,16 @@ EditAPI.prototype.getAPISuccess2 = function(responseText) {
   this.halt = false;
 }
 
+EditAPI.prototype.getAPIError = function() {
+  this.halt = false;
+  this.token = false;
+  this.gadget.token = this.token;
+  this._apiCall(true);
+}
+
+EditAPI.prototype.getAPIError2 = function() {
+  this.halt = false;
+  this.token = false;
+  this.gadget.token = this.token;
+  errorMessage.display(ERROR_SERVER_OR_NETWORK);  
+}

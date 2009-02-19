@@ -5,11 +5,13 @@
 function Reader() {
   this.content = listingContent;   
   this.currentFeed = false;
+  this.currentFeedUnread = 0;
   this.scrollbar = new CustomScrollbar(this);
-  
+    
   commandsClose.onclick = this.showFeed.bind(this);
   commandsFeeds.onclick = this.showListing.bind(this);
   reload.onclick = this.reload.bind(this);  
+  markRead.onclick = this.markRead.bind(this);
 }
 
 /**
@@ -42,13 +44,25 @@ Reader.prototype.reset = function() {
 }
 
 /**
+* Mark feed as read
+*/
+Reader.prototype.markRead = function() {
+  if (loading.visible) return;
+  if (!markRead.visible) return;
+  
+  if (this.currentFeed) {
+    this.currentFeed.markRead();
+  }
+}
+
+/**
 * Reload reader content
 */
 Reader.prototype.reload = function() {
   if (loading.visible) return;
   if (feedContent.visible && this.currentFeed) {
     this.currentFeed.reload();
-  } else if (listingContent.visible) {
+  } else {
     listing.reload();
   }
 }
@@ -68,7 +82,7 @@ Reader.prototype.showListing = function() {
   
   showNewItems.innerText = 'updated';
   showAllItems.innerText = 'all';
-  showLine.draw();
+  showLine.show(listing.show);
   
   if (this.currentFeed) {
     this.currentFeed.saveScroll();
@@ -80,6 +94,13 @@ Reader.prototype.showListing = function() {
   if (listing.scroll) {
     this.scrollbar.scrollTo(listing.scroll);
   }
+
+  if (this.currentFeed) {
+    if (this.currentFeed.unread != this.currentFeedUnread) {
+      listing.reloadUnreadCount(true);
+    }
+  }
+  this.currentFeedUnread = 0;
 }
 
 /**
@@ -87,6 +108,10 @@ Reader.prototype.showListing = function() {
 */
 Reader.prototype.showFeed = function() {
   if (!this.currentFeed) return;
+
+  if (!this.currentFeedUnread) {
+    this.currentFeedUnread = this.currentFeed.unread;
+  }
   
   title.innerText = this.currentFeed.title;
 
@@ -146,7 +171,7 @@ Reader.prototype.draw = function() {
     this.content.height--;
 	}
 
-	this.scrollbar.draw();
+  this.scrollbar.draw();  
 }
 
 
