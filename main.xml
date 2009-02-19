@@ -84,9 +84,9 @@
 
           <div name="showItems" height="18" y="28">
             <label name="showLabel" color="#333333" bold="true" font="helvetica" size="8">Show</label>
-            <a name="showNewItems" color="#282828" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="false">updated</a>
+            <a name="showNewItems" color="#0252a5" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="true">updated</a>
             <div name="showItemsDivider" width="1" y="2" height="12" background="#adb5be" />
-            <a name="showAllItems" color="#0252a5" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="true">all</a>
+            <a name="showAllItems" color="#282828" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="false">all</a>
           </div>
           
           <button name="reload" y="31" width="9" image="images\reload.png" downImage="images\reload-hover.png" overImage="images\reload-hover.png" enabled="true" cursor="hand" />
@@ -99,34 +99,25 @@
       <div name="contentArea" y="46">
         <div name="contentContainer" background="#FFFFFF">
           <div x="4" y="0" name="feedContent" background="#FFFFFF" visible="false" />
-          <div x="4" y="0" name="listingContent" background="#FFFFFF">
+          <div x="4" y="0" name="listingContent" background="#FFFFFF" visible="false">
             <a name="allItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">All items</a>
             <div x="13" height="19">
-              <a name="starredItems" color="#105caa" height="19" font="helvetica" size="9" bold="true">Starred items</a>
+              <a name="starredItems" color="#105caa" height="19" font="helvetica" size="9" bold="false">Starred items</a>
               <img name="starredItemsIcon" y="3" width="12" height="12" src="images/icon-star.png" />
             </div>
             
-            <a name="yourStuff" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">Your stuff</a>
+            <a name="yourStuff" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="false">Your stuff</a>
             <div x="34" height="19">
               <img name="sharedItemsIcon" y="3" width="12" height="12" src="images/icon-shared.png" />
-              <a name="sharedItems" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="true">Shared items</a>
+              <a name="sharedItems" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="false">Shared items</a>
             </div>
             <div x="34" height="19">
               <img name="yourNotesIcon" y="3" width="12" height="12" src="images/icon-notes.png" />
-              <a name="yourNotes" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="true">Notes</a>
+              <a name="yourNotes" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="false">Notes</a>
             </div>
               
-            <a name="friendsItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">Friends' shared items</a>
-            <div name="friends" x="30">
-              <div height="19">
-                <img y="2" width="16" height="16" src="images/tmp-userpic.jpg" />
-                <a color="#105caa" x="18" height="19" font="helvetica" size="9" bold="true">Dana</a>
-              </div>
-              <div height="19">
-                <img y="2" width="16" height="16" src="images/tmp-userpic.jpg" />
-                <a color="#105caa" x="18" height="19" font="helvetica" size="9" bold="true">Dana</a>
-              </div>              
-            </div>
+            <a name="friendsItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true" visible="false">Friends' shared items</a>
+            <div name="friends" x="30" />
             <div name="feeds" />
           </div>
           <div y="3" width="14" name="scrollbar" background="#FFFFFF">

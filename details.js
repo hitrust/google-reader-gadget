@@ -19,11 +19,17 @@ Details.prototype.onOpen = function() {
   loginSession = detailsViewData.getValue('loginSession');
   this.article = detailsViewData.getValue('article');
   this.listing = detailsViewData.getValue('listing');
-
-  this.article.read = true;  
+  this.feed = detailsViewData.getValue('feed');
 
   this.editAPI = new EditAPI(this.article);
-  this.editAPI.call('MarkRead');
+
+  if (!this.article.read) {
+    this.article.read = true;  
+    this.editAPI.call('MarkRead');
+    if (!this.feed.isAlwaysShowUnread) {
+      this.feed.unread--;
+    }
+  }
 
   this.doStar(true);
   this.doShare(true);
@@ -37,8 +43,10 @@ Details.prototype.onOpen = function() {
   title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
   body.height = labelCalcHeight(body);
 
-  if (this.listing.userInfo) {
-    fromArea.innerText = this.listing.userInfo.userName+' <'+this.listing.userInfo.userEmail+'>';
+  if (this.listing.friends) {
+    fromArea.innerText = this.listing.displayName+' <'+this.listing.emailAddress+'>';
+  } else {
+    fromArea.innerText = options.getValue('username');
   }
 
   this.draw();
@@ -349,10 +357,16 @@ Details.prototype.doUnread = function() {
     this.article.read = false;
     icon.src = 'images\\details-toolbar-unread-on.png';
     this.editAPI.call('MarkUnread');
+    if (!this.feed.isAlwaysShowUnread) {
+      this.feed.unread++;
+    }
   } else {
     this.article.read = true;
     icon.src = 'images\\details-toolbar-unread-off.png';
     this.editAPI.call('MarkRead');
+    if (!this.feed.isAlwaysShowUnread) {
+      this.feed.unread--;
+    }
   }
   
   this.draw();

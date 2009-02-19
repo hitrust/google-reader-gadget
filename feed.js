@@ -10,6 +10,7 @@ function Feed(id, title) {
   this.show = 'all';
   this.scroll = false;
   this.link = false;
+  this.isAlwaysShowUnread = false;
   this.folders = {};  
 }
 
@@ -21,6 +22,39 @@ Feed.prototype.setUnread = function(x) {
 }
 
 /**
+ * Mark feed to always show unread
+ */
+Feed.prototype.setAlwaysShowUnread = function() {
+  this.isAlwaysShowUnread = true;
+}
+
+/**
+ * Does feed show unread?
+ */
+Feed.prototype.alwaysShowUnread = function() {
+  return this.isAlwaysShowUnread;
+}
+
+/**
+* Mark feed as read
+*/
+Feed.prototype.markRead = function() {
+  if (loading.visible) return false;
+
+  this.unread = 0;
+  
+  var editAPI = new EditAPI(this);
+  editAPI.call('MarkFeedRead');
+
+  for (var i=0; i<this.feed.items.length; i++) {
+    this.feed.items[i].read = true;
+  }
+
+  showLine.update();        
+  reader.showFeed();
+}
+
+/**
 * Load feed data
 */
 Feed.prototype.reload = function() {
@@ -29,8 +63,8 @@ Feed.prototype.reload = function() {
   this.scroll = false;
   gadget.token = false;
   
-  httpRequest.host = CONNECTION.FEED_HOST;
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + this.id;
+  httpRequest.host = CONNECTION.READER_HOST;
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + encodeURIComponent(this.id);
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect('', this.getSuccess.bind(this), this.getError.bind(this));
   return true;
@@ -145,7 +179,9 @@ Feed.prototype.refresh = function() {
     var article = this.feed.items[i];
 
     if (!article) continue;
-    if (article.read && this.show != 'all') continue;
+    if (!this.isAlwaysShowUnread) {
+      if (article.read && this.show != 'all') continue;
+    }
 
     var element = feedContent.appendElement('<div height="36" cursor="hand" enabled="true" />');
 
@@ -168,6 +204,7 @@ Feed.prototype.refresh = function() {
       gadget.detailsView.detailsViewData.putValue('loginSession', loginSession);
       gadget.detailsView.detailsViewData.putValue('gadget', gadget);
       gadget.detailsView.detailsViewData.putValue('listing', listing);
+      gadget.detailsView.detailsViewData.putValue('feed', this);
       plugin.showDetailsView(gadget.detailsView, "", gddDetailsViewFlagNone, gadget.onDetailsViewFeedback.bind(gadget));
     }.bind(this, i);
   

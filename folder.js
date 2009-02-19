@@ -19,6 +19,20 @@ function Folder(id, label) {
 }
 
 /**
+ * Mark main feed to always show unread
+ */
+Folder.prototype.setAlwaysShowUnread = function() {
+  this.feed.setAlwaysShowUnread();
+}
+
+/**
+ * Does main feed show unread?
+ */
+Folder.prototype.alwaysShowUnread = function() {
+  return this.feed.alwaysShowUnread();
+}
+
+/**
  * Set unread count
  */
 Folder.prototype.setUnread = function(x) {
@@ -58,6 +72,10 @@ Folder.prototype.reload = function() {
  * Refresh in listing.
  */
 Folder.prototype.refresh = function() {
+  if (!this.alwaysShowUnread()) {
+    if (!this.unread && listing.show != 'all') return false;
+  }
+
   this.element = feeds.appendElement('<div name="folder" x="2" />');
   this.header = this.element.appendElement('<div name="header" height="19" />');
   this.contents = this.element.appendElement('<div name="contents" x="29" y="18" />');
@@ -77,6 +95,7 @@ Folder.prototype.refresh = function() {
   }
   
  	this.plusminus.onclick = this.toggle.bind(this);
+ 	return true;
 }
 
 /**
@@ -88,11 +107,55 @@ Folder.prototype.refreshFeed = function(item) {
   var feed = listing.feeds[item.id];
   if (!feed) return;
 
+  if (!feed.alwaysShowUnread()) {
+    if (!feed.unread && listing.show != 'all') return false;
+  }
+
   var element = this.contents.appendElement('<div name="feed" x="16" height="19" />');
   element.appendElement('<img y="4" width="11" height="11" src="images/icon-feed.png" />');
 
   feed.link = element.appendElement('<a color="#105caa" x="12" height="19" font="helvetica" size="9" bold="true"></a>');
   listing.updateUnreadCount(feed);
+  return true;
+}
+
+/**
+* Load a single friend feed
+*/
+Folder.prototype.refreshFriend = function(friend) {	
+  if (!friend) return;
+
+  var feed = listing.feeds[friend.stream];
+  if (!feed) return;
+
+  if (!feed.alwaysShowUnread()) {
+    if (!feed.unread && listing.show != 'all') return false;
+  }
+
+  var element = friends.appendElement('<div height="19" />');
+  var img = element.appendElement('<img y="2" width="16" height="16" />');
+  img.src = 'images\\profile-default.gif';
+
+  if (friend.photoUrl) {    
+    var httpRequest = new HTTPRequest();
+    httpRequest.host = CONNECTION.READER_HOST;
+    httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+    httpRequest.url = 'http://' + CONNECTION.READER_HOST + friend.photoUrl;
+    httpRequest.connect('', this.loadImage.bind(this, img), function() {});
+  }
+
+  feed.link = element.appendElement('<a color="#105caa" x="18" height="19" font="helvetica" size="9" bold="true"></a>');
+  listing.updateUnreadCount(feed);
+  return true;
+}
+
+/**
+* load profile image
+*/
+Folder.prototype.loadImage = function(img, responseText, responseStream) {	  
+  try {
+    img.src = responseStream;
+  } catch(e) {}
 }
 
 /**

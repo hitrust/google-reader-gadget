@@ -6,9 +6,10 @@ function Listing() {
   this.sortIDs = {};
   this.folders = {};
   this.max = 1000;
-  this.unread = 0;
   this.openFolders = {};
   this.scroll = false;
+  this.show = 'all';
+  this.init = true;
 }
 
 /**
@@ -32,8 +33,14 @@ Listing.prototype.refresh = function() {
   if (!this.folders['root'] || !this.folders['root'].items || !this.folders['root'].items.length) return;
 
   feeds.removeAllElements();
-
+  friends.removeAllElements();
+  
   this.updateUnreadCount(this.folders['root']);
+  this.updateUnreadCount(this.folders['starred']);
+  this.updateUnreadCount(this.folders['your']);
+  this.updateUnreadCount(this.feeds['shared']);
+  this.updateUnreadCount(this.feeds['notes']);
+  this.updateUnreadCount(this.folders['friends']);  
 
   for (var i=0; i<this.folders['root'].items.length; i++) {
     var folder = this.folders['root'];
@@ -46,7 +53,7 @@ Listing.prototype.refresh = function() {
       var folder = this.folders[item.id];
       if (!folder) continue;
 
-      folder.refresh();
+      if (!folder.refresh()) continue;
       
       for (var j=0; j<folder.items.length; j++) {
         var sortid = folder.items[j];
@@ -59,6 +66,22 @@ Listing.prototype.refresh = function() {
       folder.refreshFeed(item);
     }
   }
+
+  if (this.folders['friends'].unread || this.show == 'all') {  
+    friendsItems.visible = (this.friends.length > 0);
+    friends.visible = (this.friends.length > 0);
+    
+    for (var i=0; i<this.friends.length; i++) {
+      var friend = this.friends[i];
+      if (friend.contactId == "-1") continue;
+      
+      folder.refreshFriend(friend);    
+    }
+  } else {
+    friendsItems.visible = false;
+    friends.visible = false;
+  }
+  
 }
 
 
@@ -76,7 +99,7 @@ Listing.prototype.draw = function() {
 	}	
 
   // friends
-	
+		
   if (friends.height) {
     reader.content.height -= friends.height;
     feeds.y -= friends.height;
@@ -141,6 +164,11 @@ Listing.prototype.draw = function() {
   feeds.height = y;
   reader.content.height += feeds.height;
   feeds.y += friends.height;
+
+  if (!friendsItems.visible) {
+    feeds.y -= friendsItems.height;
+    reader.content.height -= friendsItems.height;
+  }
 }
 
 /**
@@ -149,13 +177,15 @@ Listing.prototype.draw = function() {
 Listing.prototype.reload = function() {
   if (loading.visible) return false;
 
-  httpRequest.host = CONNECTION.FEED_HOST;
+  this.saveScroll();
+
+  httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.overrideLoading = true;
 
-  // request the user info
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_USER_INFO;
-  httpRequest.connect('', this.saveUserInfo.bind(this), this.getError.bind(this));
+  // request the friends list
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_FRIEND_LIST;
+  httpRequest.connect('', this.saveFriendsList.bind(this), this.getError.bind(this));
 }
 
 /**
@@ -167,28 +197,29 @@ Listing.prototype.getError = function() {
 }
 
 /**
-* save user info
+* save friends list
 */
-Listing.prototype.saveUserInfo = function(responseText) {
-debug.error(responseText);
+Listing.prototype.saveFriendsList = function(responseText) {
   var json = responseText.evalJSON()
 
-  if (!json || !json.userName || !json.userEmail) {
+  if (!json || !json.friends) {
     this.getError();
     return false;     
   }
   
-  this.userInfo = json;
+  this.friends = json.friends;
+  if (this.friends && this.friends.length) {
+    for (var i=0; i<this.friends.length; i++) {
+      var friend = this.friends[i];
+      if (friend.contactId == "-1") {
+        this.displayName = friend.displayName;
+        if (friend.emailAddresses.length) {
+          this.emailAddress = friend.emailAddresses[0];
+        }
+      }
+    }
+  }
 
-  // request the friends list
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_FRIEND_LIST;
-  httpRequest.connect('', this.saveFriendsList.bind(this), this.getError.bind(this));
-}
-
-/**
-* save friends list
-*/
-Listing.prototype.saveFriendsList = function(responseText) {
   // request the subscriptions
   httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_SUBSCRIPTIONS;
   httpRequest.connect('', this.saveSubscriptions.bind(this), this.getError.bind(this));
@@ -207,11 +238,61 @@ Listing.prototype.saveSubscriptions = function(responseText) {
   }
 
   this.folders = {};
-  this.folders['root'] = new Folder('', 'All items');
-  this.folders['root'].link = allItems;
   
-  this.folders['all'] = new Folder('', 'All items');
+  // special folders and feeds
+  
+  this.folders['root'] = new Folder('user/-/state/com.google/reading-list', 'All items');
+  this.folders['root'].link = allItems;
+  this.folders['root'].setUnread(0);
+  
+  this.folders['all'] = new Folder('user/-/state/com.google/reading-list', 'All items');
   this.folders['all'].link = allItems;
+  this.folders['all'].setUnread(0);
+
+  if (!this.folders['starred']) {
+    this.folders['starred'] = new Folder('user/-/state/com.google/starred', 'Starred items');
+    this.folders['starred'].link = starredItems;
+  }
+  this.folders['starred'].setAlwaysShowUnread();
+  this.folders['starred'].setUnread(0);
+
+  if (this.friends && this.friends.length) {
+    if (!this.folders['friends']) {
+      this.folders['friends'] = new Folder('user/-/state/com.google/broadcast-friends', "Friends' shared items");
+      this.folders['friends'].link = friendsItems; 
+    }
+    this.folders['friends'].setUnread(0);
+
+    for (var j=0; j<this.friends.length; j++) {
+      var friend = this.friends[j];
+      if (friend.contactId == "-1") continue;
+      
+      this.feeds[friend.stream] = new Feed(friend.stream, friend.displayName);
+    }   
+  }
+
+  if (!this.folders['your']) {
+    this.folders['your'] = new Folder('user/-/state/com.google/self', 'Your stuff');
+    this.folders['your'].link = yourStuff;
+  }
+  this.folders['your'].setAlwaysShowUnread();
+  this.folders['your'].setUnread(0);
+
+  if (!this.feeds['shared']) {
+    this.feeds['shared'] = new Feed('user/-/state/com.google/broadcast', 'Shared items');
+    this.feeds['shared'].link = sharedItems;
+  }
+  this.feeds['shared'].setAlwaysShowUnread();
+  this.feeds['shared'].setUnread(0);
+
+  if (!this.feeds['notes']) {
+    this.feeds['notes'] = new Feed('user/-/state/com.google/created', 'Notes');
+    this.feeds['notes'].link = yourNotes;
+  }
+  this.feeds['notes'].setAlwaysShowUnread();
+  this.feeds['notes'].setUnread(0);
+
+  // subscriptions and folders
 
   for (var i=0; i<json.subscriptions.length; i++) {
     var subscription = json.subscriptions[i];
@@ -221,6 +302,7 @@ Listing.prototype.saveSubscriptions = function(responseText) {
       this.feeds[subscription.id] = new Feed(subscription.id, subscription.title);
     } else {
       this.feeds[subscription.id].title = subscription.title;
+      this.feeds[subscription.id].setUnread(0);
     }
 
     if (subscription.categories.length) {
@@ -229,27 +311,42 @@ Listing.prototype.saveSubscriptions = function(responseText) {
         if (!this.folders[category.id]) {
           this.folders[category.id] = new Folder(category.id, category.label);
         }
+        this.folders[category.id].setUnread(0);
         this.folders[category.id].push(subscription.sortid);
         this.feeds[subscription.id].folders[category.id] = this.folders[category.id];
       }
     } else {
      this.folders['root'].push(subscription.sortid);
+     this.feeds[subscription.id].folders['root'] = 'root';
     }
     this.folders['all'].push(subscription.sortid);
   }
   
+  return this.reloadUnreadCount();
+}
+
+/**
+* reload unread count
+*/
+Listing.prototype.reloadUnreadCount = function(reload) {
+
   // request the unread count
   httpRequest.url = CONNECTION.READER_URL + CONNECTION.API_UNREADCOUNT;
-  httpRequest.connect('', this.saveUnreadCount.bind(this), this.getError.bind(this));
+  httpRequest.connect('', this.saveUnreadCount.bind(this, reload), this.getError.bind(this));
   return true;
 }
 
 /**
 * save unread count
 */
-Listing.prototype.saveUnreadCount = function(responseText) {
+Listing.prototype.saveUnreadCount = function(reload, responseText) {
   if (!this._saveUnreadCount(responseText)) {
     this.folders['root'] = this.folders['all'];
+    this.finish();
+    return false;
+  }
+
+  if (reload) {
     this.finish();
     return false;
   }
@@ -274,7 +371,15 @@ Listing.prototype._saveUnreadCount = function(responseText) {
     this.max = json.max;
   }
 
-  this.unread = 0;
+  for (var id in this.folders) {
+    if (_typeOf(this.folders[id]) == "function") continue;
+    this.folders[id].setUnread(0);
+  }
+  
+  for (var id in this.feeds) {
+    if (_typeOf(this.feeds[id]) == "function") continue;
+    this.feeds[id].setUnread(0);
+  }
 
   for (var i=0; i<json.unreadcounts.length; i++) {
     var unreadcount = json.unreadcounts[i];
@@ -283,11 +388,18 @@ Listing.prototype._saveUnreadCount = function(responseText) {
     }
     if (this.feeds[unreadcount.id]) {
       this.feeds[unreadcount.id].setUnread(unreadcount.count);
-      this.unread += unreadcount.count;
     }
+    if (this.folders['friends']) {
+      if (unreadcount.id.match(/user\/(.*?)\/broadcast-friends$/)) {
+        this.folders['friends'].setUnread(unreadcount.count);
+      }    
+    }
+    if (unreadcount.id.match(/user\/(.*?)\/reading-list$/)) {
+      this.folders['root'].setUnread(unreadcount.count);
+      this.folders['all'].setUnread(unreadcount.count);      
+    }        
   }
 
-  this.folders['root'].setUnread(this.unread);
   return true;
 }
 
@@ -295,8 +407,13 @@ Listing.prototype._saveUnreadCount = function(responseText) {
 * update unread count
 */
 Listing.prototype.updateUnreadCount = function(item) {
+  if (!item) return;
   item.link.innerText = item.title;
-  
+  item.link.bold = (item.unread > 0);
+  if (!item.link.bold) {
+    item.link.color = item.alwaysShowUnread() ? '#105caa' : '#5b7691';    
+  }
+ 
   if (item.unread > 0 && item.unread < this.max) {
     item.link.innerText += ' ('+item.unread+')';
   } else if (item.unread >= this.max) {
@@ -382,8 +499,7 @@ Listing.prototype.saveSortOrder = function(responseText) {
   var ordering = {};
   
   for (var id in json.streamprefs) {
-    if (typeof json.streamprefs[id] == "function" ||
-        typeof json.streamprefs[id] == "array" ||
+    if (_typeOf(json.streamprefs[id]) == "function" ||
         !json.streamprefs[id].length) continue;
 
     var prefs = json.streamprefs[id];
@@ -407,8 +523,7 @@ Listing.prototype.saveSortOrder = function(responseText) {
   }
 
   for (var id in ordering) {
-    if (typeof ordering[id] == "function" ||
-        typeof ordering[id] == "array" ||
+    if (_typeOf(ordering[id]) == "function" ||
         !ordering[id].length) continue;
 
     if (this.folders[id]) {   
@@ -417,7 +532,15 @@ Listing.prototype.saveSortOrder = function(responseText) {
       var len = ordering[id].length / 8;
       for (var i=0; i<len; i++) {
         var sortid = ordering[id].substring(i*8, i*8+8);
-        this.folders[id].push(sortid);
+
+        var item = this.sortIDs[sortid];
+        if (this.feeds[item.id]) {
+          if (this.feeds[item.id].folders[id]) {
+            this.folders[id].push(sortid);
+          }
+        } else {
+          this.folders[id].push(sortid);      
+        }
       }    
     }
   }
@@ -431,8 +554,18 @@ Listing.prototype.saveSortOrder = function(responseText) {
 Listing.prototype.finish = function() {
   httpRequest.hideLoading();
 
+  if (this.init) {
+    this.init = false;
+    listingContent.visible = true;
+  }
+
   this.refresh();
   gadget.draw();
+  
+  if (this.scroll) {
+    reader.scrollbar.scrollTo(this.scroll);
+  }
+
   return true;
 }
 

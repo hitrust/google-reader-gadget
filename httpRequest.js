@@ -105,7 +105,7 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
   } else {
     this.url += '&'+suffix; 
   }
-
+debug.error(this.url);
   this.handler = handler;
   this.failedHandler = failedHandler;
   this.packet.abort();
@@ -220,6 +220,6 @@ HTTPRequest.prototype.receivedData = function() {
     return;
   }
   if (this.handler !== null) {
-    this.handler(this.packet.responseText);
+    this.handler(this.packet.responseText, this.packet.responseStream);
   }
 };

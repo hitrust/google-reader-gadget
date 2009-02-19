@@ -63,13 +63,19 @@ ShowLine.prototype.show = function(what) {
       showNewItems.enabled = true;
       break;    
   }
-  
-  if (reader.currentFeed) {
+
+  if (feedContent.visible && reader.currentFeed) {
     reader.currentFeed.show = what;
     reader.currentFeed.refresh();
     reader.scrollbar.saveY = false;
     reader.draw();  
+  } else if (listingContent.visible) {
+    listing.show = what;
+    listing.refresh();
+    reader.scrollbar.saveY = false;
+    reader.draw();  
   }
+
   this.draw();
 }
 
