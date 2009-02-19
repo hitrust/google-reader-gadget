@@ -71,7 +71,7 @@ Reader.prototype.reload = function() {
 * Show feed listing
 */
 Reader.prototype.showListing = function() {
-  title.innerText = 'Feeds';
+  title.innerText = STRINGS.FEEDS;
 
   feedContent.visible = false;
   listingContent.visible = true;
@@ -94,7 +94,7 @@ Reader.prototype.showListing = function() {
   if (listing.scroll) {
     this.scrollbar.scrollTo(listing.scroll);
   }
-
+  
   if (this.currentFeed) {
     if (this.currentFeed.unread != this.currentFeedUnread) {
       listing.reloadUnreadCount(true);

@@ -37,7 +37,7 @@ Details.prototype.onOpen = function() {
   title.innerText = this.article.title;
   body.innerText = this.article.body;
   subtitle.innerText = this.article.subtitle+' ';
-  date.innerText = new Date(this.article.updated*1000).ago()+' ago';
+  date.innerText = new Date(this.article.updated*1000).ago()+' '+STRINGS.AGO;
   this.tags = this.article.tags || [];
   
   title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
@@ -170,7 +170,7 @@ Details.prototype.drawTag = function(x) {
     var text = div.children.item('text');
 
     if (this.tags.length) {
-      link.innerText = 'Edit Tag';
+      link.innerText = STRINGS.EDIT_TAG;
     }
     text.visible = false;
   
@@ -181,14 +181,14 @@ Details.prototype.drawTag = function(x) {
     if (text && this.tags.length) {
       text.innerText = this.tags[0];   
       if (toolbar.width > x + labelCalcWidth(text)) {
-        link.innerText = 'Edit Tag:';
+        link.innerText = STRINGS.EDIT_TAG+':';
         text.x = link.x + labelCalcWidth(link) - 3;
         text.visible = true;    
         div.width += labelCalcWidth(text) - 3;
       }
     }
     if (!this.tags.length) {
-      link.innerText = 'Add Tag';    
+      link.innerText = STRINGS.ADD_TAG;    
     }
   }
 }
@@ -267,12 +267,12 @@ Details.prototype.doStar = function(init) {
   if (this.article.starred) {
     this.article.starred = false;
     icon.src = 'images\\details-toolbar-star-off.png';
-    link.innerText = 'Add star';
+    link.innerText = STRINGS.ADD_STAR;
     this.editAPI.call('Unstar');  
   } else {
     this.article.starred = true;
     icon.src = 'images\\details-toolbar-star-on.png';
-    link.innerText = 'Remove star';  
+    link.innerText = STRINGS.REMOVE_STAR;  
     this.editAPI.call('Star');      
   }
   
@@ -296,12 +296,12 @@ Details.prototype.doShare = function(init) {
   if (this.article.shared) {
     this.article.shared = false;
     icon.src = 'images\\details-toolbar-share-off.png';
-    link.innerText = 'Share';  
+    link.innerText = STRINGS.SHARE;  
     this.editAPI.call('Unshare');  
   } else {
     this.article.shared = true;
     icon.src = 'images\\details-toolbar-share-on.png';
-    link.innerText = 'Unshare';
+    link.innerText = STRINGS.UNSHARE;
     this.editAPI.call('Share');    
   }
   

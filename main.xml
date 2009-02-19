@@ -79,14 +79,14 @@
         <div name="titleStatusContent" x="2" height="46"
           background="images/blue-area-fill.gif"> 
 
-          <label name="title" y="4" color="#ffffff" bold="true" font="helvetica" size="10" trimming="character-ellipsis">Feeds</label>
-          <a name="markRead" y="6" color="#ffffff" bold="true" font="helvetica" size="8" trimming="character-ellipsis" overColor="#e1eef6" visible="false">Mark all as read</a>
+          <label name="title" y="4" color="#ffffff" bold="true" font="helvetica" size="10" trimming="character-ellipsis">&FEEDS;</label>
+          <a name="markRead" y="6" color="#ffffff" bold="true" font="helvetica" size="8" trimming="character-ellipsis" overColor="#e1eef6" visible="false">&MARK_ALL_READ;</a>
 
           <div name="showItems" height="18" y="28">
-            <label name="showLabel" color="#333333" bold="true" font="helvetica" size="8">Show</label>
-            <a name="showNewItems" color="#0252a5" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="true">updated</a>
+            <label name="showLabel" color="#333333" bold="true" font="helvetica" size="8">&SHOW;</label>
+            <a name="showNewItems" color="#0252a5" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="true">&UPDATED;</a>
             <div name="showItemsDivider" width="1" y="2" height="12" background="#adb5be" />
-            <a name="showAllItems" color="#282828" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="false">all</a>
+            <a name="showAllItems" color="#282828" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="false">&ALL;</a>
           </div>
           
           <button name="reload" y="31" width="9" image="images\reload.png" downImage="images\reload-hover.png" overImage="images\reload-hover.png" enabled="true" cursor="hand" />
@@ -100,23 +100,23 @@
         <div name="contentContainer" background="#FFFFFF">
           <div x="4" y="0" name="feedContent" background="#FFFFFF" visible="false" />
           <div x="4" y="0" name="listingContent" background="#FFFFFF" visible="false">
-            <a name="allItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">All items</a>
+            <a name="allItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true">&ALL_ITEMS;</a>
             <div x="13" height="19">
-              <a name="starredItems" color="#105caa" height="19" font="helvetica" size="9" bold="false">Starred items</a>
+              <a name="starredItems" color="#105caa" height="19" font="helvetica" size="9" bold="false">&STARRED_ITEMS;</a>
               <img name="starredItemsIcon" y="3" width="12" height="12" src="images/icon-star.png" />
             </div>
             
-            <a name="yourStuff" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="false">Your stuff</a>
+            <a name="yourStuff" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="false">&YOUR_STUFF;</a>
             <div x="34" height="19">
               <img name="sharedItemsIcon" y="3" width="12" height="12" src="images/icon-shared.png" />
-              <a name="sharedItems" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="false">Shared items</a>
+              <a name="sharedItems" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="false">&SHARED_ITEMS;</a>
             </div>
             <div x="34" height="19">
               <img name="yourNotesIcon" y="3" width="12" height="12" src="images/icon-notes.png" />
-              <a name="yourNotes" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="false">Notes</a>
+              <a name="yourNotes" x="14" color="#105caa" height="19" font="helvetica" size="9" bold="false">&NOTES;</a>
             </div>
               
-            <a name="friendsItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true" visible="false">Friends' shared items</a>
+            <a name="friendsItems" x="13" color="#105caa" height="19" font="helvetica" size="9" bold="true" visible="false">&FRIENDS_SHARED_ITEMS;</a>
             <div name="friends" x="30" />
             <div name="feeds" />
           </div>

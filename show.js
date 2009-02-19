@@ -45,7 +45,7 @@ ShowLine.prototype.draw = function() {
  */
 ShowLine.prototype.update = function() {
   var number = reader.currentFeed.unread >= listing.max ? listing.max+'+' : reader.currentFeed.unread;
-  showNewItems.innerText = number+' new item'+(reader.currentFeed.unread == 1 ? '' : 's');
+  showNewItems.innerText = number+' '+(reader.currentFeed.unread == 1 ? STRINGS.NEW_ITEM : STRINGS.NEW_ITEMS);
 }
 
 /**

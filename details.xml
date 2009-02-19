@@ -28,10 +28,10 @@
       <div name="border" width="496" height="1" background="#93bde7" />
       <div name="pane" y="1" width="495" height="212" background="#ebf4fd">
 
-        <label name="fromLabel" size="8" x="9" y="6" align="right" height="21" font="helvetica" color="#000000" bold="true">From:</label>
+        <label name="fromLabel" size="8" x="9" y="6" align="right" height="21" font="helvetica" color="#000000" bold="true">&FROM_LABEL;</label>
         <label name="fromArea" size="8" y="6" height="21" font="helvetica" color="#000000"></label>
 
-        <label name="toLabel" size="8" x="9" y="29" align="right" height="19" font="helvetica" color="#000000" bold="true">To:</label>        
+        <label name="toLabel" size="8" x="9" y="29" align="right" height="19" font="helvetica" color="#000000" bold="true">&TO_LABEL;</label>        
         <div name="toArea" y="27" width="241" height="21" background="#a2c8ee">
           <div x="1" y="1" width="239" height="19" background="#ffffff">
             <edit name="toField" y="2" size="9" width="239" height="17" font="helvetica" 
@@ -39,16 +39,16 @@
           </div>
         </div>
 
-        <label name="subjectLabel" size="8" x="9" y="57" align="right" height="19" font="helvetica" color="#000000" bold="true">Subject:</label>
+        <label name="subjectLabel" size="8" x="9" y="57" align="right" height="19" font="helvetica" color="#000000" bold="true">&SUBJECT_LABEL;</label>
         <div name="subjectArea" y="55" width="241" height="21" background="#a2c8ee">
           <div x="1" y="1" width="239" height="19" background="#ffffff">
             <edit name="subjectField" y="2" size="9" width="239" height="17" font="helvetica" 
-              background="#ffffff" color="#121212" enabled="true" value="Lebanon president visits Tehran" />              
+              background="#ffffff" color="#121212" enabled="true" />              
           </div>
         </div>
 
-        <label name="noteLeft" size="8" x="9" y="82" font="helvetica" color="#000000" bold="true">Note to go along with the item:</label>
-        <label name="noteRight" size="8" y="82" font="helvetica" color="#000000">(Optional, no more than 1,000 characters)</label>        
+        <label name="noteLeft" size="8" x="9" y="82" font="helvetica" color="#000000" bold="true">&NOTE_ITEM;</label>
+        <label name="noteRight" size="8" y="82" font="helvetica" color="#000000">&OPTIONAL_CHARACTER_LIMIT;</label>        
 
         <div width="478" height="54" x="9" y="99" background="#bfbfbf">
           <div width="476" height="52" x="1" y="1" background="#ffffff">
@@ -58,15 +58,15 @@
         </div>
 
         <checkbox name="emailCheck" x="9" y="160" width="100%" height="13" size="8" font="helvetica" color="#000000"
-          caption="Send me a copy of this email"
+          caption="&SEND_ME_A_COPY;"
           image="images\details-checkbox-off.png"
           overImage="images\details-checkbox-off.png"
           downImage="images\details-checkbox-off.png"
           checkedImage="images\details-checkbox-on.png"
           checkedOverImage="images\details-checkbox-on.png"
           checkedDownImage="images\details-checkbox-on.png" />
-        <button name="send" caption="Send" x="9" y="178" width="48" height="22" font="arial" size="9" image="images/details-button-send.png" cursor="hand" />
-        <button name="cancel" caption="Cancel" x="59" y="178" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" cursor="hand" />
+        <button name="send" caption="&SEND;" x="9" y="178" width="48" height="22" font="arial" size="9" image="images/details-button-send.png" cursor="hand" />
+        <button name="cancel" caption="&CANCEL;" x="59" y="178" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" cursor="hand" />
       </div>
     </div>
     <div name="notePane" x="5" y="182" width="496" height="123" visible="false">
@@ -79,46 +79,46 @@
           </div>
         </div>
         <checkbox name="noteCheck" x="9" y="70" width="100%" height="13" size="8" font="helvetica" color="#000000"
-          caption="Add to shared items"
+          caption="&ADD_TO_SHARED;"
           image="images\details-checkbox-off.png"
           overImage="images\details-checkbox-off.png"
           downImage="images\details-checkbox-off.png"
           checkedImage="images\details-checkbox-on.png"
           checkedOverImage="images\details-checkbox-on.png"
           checkedDownImage="images\details-checkbox-on.png" />
-        <button name="post" caption="Post Item" x="9" y="88" width="73" height="22" font="arial" size="9" image="images/details-button-post.png" cursor="hand" />
+        <button name="post" caption="&POST_ITEM;" x="9" y="88" width="73" height="22" font="arial" size="9" image="images/details-button-post.png" cursor="hand" />
       </div>
     </div>    
     <div name="toolbar" x="5" y="305" width="496" height="23" background="images\details-toolbar.png">
       <div name="star" height="23">
         <img name="icon" x="5" y="4" width="14" height="14" src="images\details-toolbar-star-off.png" enabled="true" cursor="hand"/>
-        <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Add star</a>
+        <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&ADD_STAR;</a>
       </div>
       <div name="share" height="23">
         <img name="icon" x="5" y="4" width="14" height="14" src="images\details-toolbar-share-off.png" enabled="true" cursor="hand"/>
-        <a name="link" x="23" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Share</a>
+        <a name="link" x="23" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&SHARE;</a>
       </div>
       <div name="note" height="23">
         <div name="active" height="22" background="#93bde7" visible="false">
           <div x="1" height="21" background="#ebf4fd"/>
         </div>
         <img name="icon" x="5" y="4" width="14" height="14" src="images\details-toolbar-note.png" enabled="true" cursor="hand"/>
-        <a name="link" x="23" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Share with Note</a>      
+        <a name="link" x="23" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&SHARE_WITH_NOTE;</a>      
       </div>
       <div name="email" height="23">
         <div name="active" height="22" background="#93bde7" visible="false">
           <div x="1" height="21" background="#ebf4fd"/>
         </div>
         <img name="icon" x="5" y="8" width="12" height="9" src="images\details-toolbar-email.png" enabled="true" cursor="hand"/>
-        <a name="link" x="19" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Email</a>      
+        <a name="link" x="19" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&EMAIL;</a>      
       </div>
       <div name="unread" height="23">
         <img name="icon" x="5" y="7" width="12" height="10" src="images\details-toolbar-unread-off.png" enabled="true" cursor="hand"/>
-        <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Keep Unread</a>      
+        <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&KEEP_UNREAD;</a>      
       </div>
       <div name="tag" height="23">
         <img name="icon" x="5" y="6" width="14" height="14" src="images\details-toolbar-tag.png" enabled="true" cursor="hand"/>
-        <a name="link" x="22" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">Add Tag</a>  
+        <a name="link" x="22" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&ADD_TAG;</a>  
         <label name="text" y="4" height="18" font="helvetica" size="8" color="#252525" visible="false"></label>          
       </div>
     </div>
@@ -129,9 +129,9 @@
             <edit name="tagEdit" width="214" height="18" x="2" y="2" font="helvetica" size="8" color="#000000" />
           </div>
         </div>
-        <label x="6" y="29" font="helvetica" size="8" color="#898989">Separate tags by commas</label>
-        <button name="save" caption="Save" x="7" y="49" width="48" height="22" font="arial" size="9" image="images/details-button-save.png" cursor="hand" />
-        <button name="cancel" caption="Cancel" x="57" y="49" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" cursor="hand" />
+        <label x="6" y="29" font="helvetica" size="8" color="#898989">&SEPARATE_TAGS;</label>
+        <button name="save" caption="&SAVE;" x="7" y="49" width="48" height="22" font="arial" size="9" image="images/details-button-save.png" cursor="hand" />
+        <button name="cancel" caption="&CANCEL;" x="57" y="49" width="59" height="22" font="arial" size="9" image="images/details-button-cancel.png" cursor="hand" />
       </div>
     </div>        
   </div>

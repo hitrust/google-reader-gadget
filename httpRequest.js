@@ -105,7 +105,7 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
   } else {
     this.url += '&'+suffix; 
   }
-debug.error(this.url);
+
   this.handler = handler;
   this.failedHandler = failedHandler;
   this.packet.abort();

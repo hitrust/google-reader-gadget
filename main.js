@@ -27,6 +27,7 @@ Main.prototype.onDetailsViewFeedback = function(detailsViewFlags) {
       }
       if (reader.currentFeed.unread >= listing.max-1) {
         reader.currentFeed.unread = listing.max;
+        reader.currentFeedUnread = listing.max - 1;
       }
       
       reader.currentFeed.saveScroll();
