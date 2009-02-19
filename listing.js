@@ -23,7 +23,7 @@ Listing.prototype.reset = function() {
  * Save the scroll position
  */
 Listing.prototype.saveScroll = function() {
-  this.scroll = reader.scrollbar.postition();
+  this.scroll = reader.scrollbar.position();
 }
 
 /**

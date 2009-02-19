@@ -130,7 +130,7 @@ Reader.prototype.showFeed = function() {
 
   this.content = feedContent;
   this.draw();
-  
+
   if (this.currentFeed.scroll) {
     this.scrollbar.scrollTo(this.currentFeed.scroll);
   } else {
