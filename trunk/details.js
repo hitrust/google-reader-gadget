@@ -89,6 +89,26 @@ Details.prototype.draw = function() {
   this.drawTag(x);
   this.drawText();
   this.drawEmail();
+  this.drawNote();
+}
+
+/**
+ * Draw note form
+ */
+Details.prototype.drawNote = function(x) {
+  addTagsArea.visible = false;
+  addTagsLabel.visible = false;
+  
+  addTags.x = noteCheck.x + checkboxCalcWidth(noteCheck) + 23;
+  addTags.innerText = STRINGS.ADD_TAGS;
+  addTags.color = '#0252a5';
+  addTags.underline = true;
+  addTags.enabled = true;
+  addTags.overColor = '#0252a5';
+  addTags.onmouseover = function() { addTags.overColor = '#0000ff'; }
+
+  addTagsArea.x = addTags.x + labelCalcWidth(addTags) + 3;
+  addTagsLabel.x = addTags.x + labelCalcWidth(addTags) + 3;
 }
 
 /**
@@ -313,15 +333,31 @@ Details.prototype.doShare = function(init) {
 /**
  * Toolbar function: share article with note
  */
+Details.prototype.showNoteTags = function() {
+  addTags.innerText = STRINGS.ADD_TAGS+':';
+  addTags.color = '#000000';
+  addTags.overColor = '#000000';
+  addTags.underline = false;
+  addTags.enabled = false;
+  addTagsArea.visible = true;
+  addTagsLabel.visible = true;
+}
+
+/**
+ * Toolbar function: share article with note
+ */
 Details.prototype.doNote = function() {
   noteField.value = '';
+  noteTagEdit.value = '';
   noteCheck.value = true;
-
+  
   var post = notePane.children.item('pane').children.item('post');
   post.onclick = this.notePost.bind(this);
 
+  addTags.onclick = this.showNoteTags.bind(this);
 
   this.toggle(note);
+  this.drawNote();
   
   noteField.focus();
 }
@@ -454,7 +490,7 @@ Details.prototype.emailSend = function() {
  * Post share with note
  */
 Details.prototype.notePost = function() {
-  this.editAPI.call('ShareWithNote', noteField.value, noteCheck.value);
+  this.editAPI.call('ShareWithNote', noteField.value, noteCheck.value, noteTagEdit.value);
   this.toggle(note);
   errorMessage.display(noteCheck.value ? ALERT_NOTE_ADDED_AND_SHARED : ALERT_NOTE_ADDED);
 }

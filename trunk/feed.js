@@ -10,6 +10,7 @@ function Feed(id, title) {
   this.show = 'all';
   this.scroll = false;
   this.link = false;
+  this.init = true;
   this.isAlwaysShowUnread = false;
   this.folders = {};  
 }
@@ -60,8 +61,9 @@ Feed.prototype.markRead = function() {
 Feed.prototype.reload = function() {
   if (loading.visible) return false;
 
-  this.scroll = false;
   gadget.token = false;
+
+  this.scroll = false;  
   
   httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + encodeURIComponent(this.id);
@@ -83,7 +85,7 @@ Feed.prototype.isDisplayed = function() {
  * Save the scroll position
  */
 Feed.prototype.saveScroll = function() {
-  this.scroll = reader.scrollbar.postition();
+  this.scroll = reader.scrollbar.position();
 }
 
 /**
@@ -287,8 +289,17 @@ Feed.prototype.getError = function(status, responseText) {
     loginSession.logout();
     return;
   }
-  if (feedContent.children.count == 0) {
-    errorMessage.display(ERROR_SERVER_OR_NETWORK);      
+  if (!this.feed.items || !this.feed.items.length) {
+    feedContent.removeAllElements();
+
+    errorMessage.display(ERROR_SERVER_OR_NETWORK);
+
+    reader.currentFeed = this;
+    reader.showFeed();
+    
+    commandsSearch.visible = false;
+    markRead.visible = false;
+    reader.currentFeed = false;
   }
 }
 

@@ -58,7 +58,14 @@ EditAPI.prototype.editSendEmail = function(to, subject, body, ccME) {
 /**
  * Change message tags
  */
-EditAPI.prototype.editShareWithNote = function(annotation, share) {
+EditAPI.prototype.editShareWithNote = function(annotation, share, tags) {
+
+  var addTags = [];
+  var newTags = tags.trim().split(/,\s*/);
+
+  for (var i=0; i<newTags.length; i++) {
+    addTags.push('user/-/label/'+newTags[i].replace('/','-'));
+  }
 
   this.command = 'item/edit';
 
@@ -70,6 +77,7 @@ EditAPI.prototype.editShareWithNote = function(annotation, share) {
                'snippet' : this.item.rawBody,
                'annotation' : annotation,
                'share' : share,
+               'tags' : addTags,
                'linkify' : false
              };
 }
@@ -85,13 +93,13 @@ EditAPI.prototype.editTags = function(tags) {
   
   for (var i=0; i<tags.length; i++) {
     if (this.item.tags.indexOf(tags[i]) == -1) {
-      addTags.push('user/-/label/'+tags[i]);
+      addTags.push('user/-/label/'+tags[i].replace('/','-'));
     }
   }
 
   for (var i=0; i<this.item.tags.length; i++) {
     if (tags.indexOf(this.item.tags[i]) == -1) {
-      delTags.push('user/-/label/'+this.item.tags[i]);
+      delTags.push('user/-/label/'+this.item.tags[i].replace('/','-'));
     }
   }
 

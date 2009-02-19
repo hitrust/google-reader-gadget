@@ -1,6 +1,6 @@
 <strings>
   <GADGET_NAME>Reader</GADGET_NAME>
-  <GADGET_DESCRIPTION>View and open your Google Docs documents.</GADGET_DESCRIPTION>
+  <GADGET_DESCRIPTION>Read your Google Reader news feeds.</GADGET_DESCRIPTION>
   <GADGET_ABOUT_TEXT>Reader © 2008</GADGET_ABOUT_TEXT>
   <GADGET_COPYRIGHT>Copyright 2008 Google Inc. All Rights Reserved.</GADGET_COPYRIGHT>
   <GADGET_OWNER>Google</GADGET_OWNER>
@@ -162,6 +162,7 @@
   <AGO>ago</AGO>
   <EDIT_TAG>Edit Tag</EDIT_TAG>
   <ADD_TAG>Add Tag</ADD_TAG>
+  <ADD_TAGS>Add Tags</ADD_TAGS>
   <ADD_STAR>Add star</ADD_STAR>
   <REMOVE_STAR>Remove star</REMOVE_STAR>
   <SHARE>Share</SHARE>

@@ -214,6 +214,33 @@ function labelCalcWidth(ele) {
   return idealRect.width; 
 } 
 
+// Calculate the width of a checkbox
+function checkboxCalcWidth(ele) { 
+  try {
+    var edit = labelCalcHelper;
+  } catch(e) {
+    var edit = view.appendElement('<edit name="labelCalcHelper" />');
+  }
+
+  edit.visible = false; 
+  edit.color = '#000000';
+  edit.y = 2000; 
+  edit.x = 0; 
+  edit.width = 1000; 
+  edit.height = 30; 
+  edit.wordWrap = false;
+  edit.value = ele.caption; 
+  edit.font = ele.font; 
+  edit.size = ele.size; 
+  edit.bold = ele.bold; 
+  edit.italic = ele.italic; 
+  edit.underline = ele.underline; 
+  var idealRect = edit.idealBoundingRect; 
+  edit.width = idealRect.width; 
+  edit.height = idealRect.height; 
+  return idealRect.width; 
+} 
+
 // Calculate the height of a label
 function labelCalcHeight(ele) { 
   try {

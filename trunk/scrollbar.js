@@ -57,40 +57,30 @@ CustomScrollbar.prototype.keydown = function() {
  * Shortcut functions
  */
 CustomScrollbar.prototype.scrollTo = function(y) {  
-  if (scrollbar.visible) {
-    scrollbarBar.y = y;
-    this.scroll();            
-  }
+  scrollbarBar.y = y;
+  this.scroll();            
 }
 
-CustomScrollbar.prototype.postition = function(y) {  
+CustomScrollbar.prototype.position = function(y) {  
   return scrollbarBar.y;
 }
 
 CustomScrollbar.prototype.scrollBottom = function() {  
-  if (scrollbar.visible) {
-    scrollbarBar.y = this.max();
-    this.scroll();            
-  }
+  scrollbarBar.y = this.max();
+  this.scroll();            
 }
 
 CustomScrollbar.prototype.scrollTop = function() {    
-  if (scrollbar.visible) {  
-    scrollbarBar.y = this.min();
-    this.scroll();  
-  }
+  scrollbarBar.y = this.min();
+  this.scroll();  
 }
 
 CustomScrollbar.prototype.scrollPageDown = function() {  
-  if (scrollbar.visible) {    
-    this.moveBar(scrollbarBar.height);
-  }
+  this.moveBar(scrollbarBar.height);
 }
 
 CustomScrollbar.prototype.scrollPageUp = function() {    
-  if (scrollbar.visible) {    
-    this.moveBar(-scrollbarBar.height);
-  }
+  this.moveBar(-scrollbarBar.height);
 }
 
 /**

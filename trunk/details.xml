@@ -86,6 +86,14 @@
           checkedImage="images\details-checkbox-on.png"
           checkedOverImage="images\details-checkbox-on.png"
           checkedDownImage="images\details-checkbox-on.png" />
+        <a name="addTags" y="69" height="18" font="helvetica" size="8" color="#0252a5">&ADD_TAGS;</a>                
+        <div name="addTagsArea" width="222" height="21" y="69" background="#bfbfbf" visible="false">
+          <div width="220" height="19" x="1" y="1" background="#ffffff">
+            <edit name="noteTagEdit" width="214" height="18" x="2" y="2" font="helvetica" size="8" color="#000000" />
+          </div>
+        </div>
+        <label name="addTagsLabel" y="90" font="helvetica" size="8" color="#898989" visible="false">&SEPARATE_TAGS;</label>
+
         <button name="post" caption="&POST_ITEM;" x="9" y="88" width="73" height="22" font="arial" size="9" image="images/details-button-post.png" cursor="hand" />
       </div>
     </div>    
