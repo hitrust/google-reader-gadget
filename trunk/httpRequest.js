@@ -96,6 +96,8 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
     stream = null;
   }
 
+  //debug.error(this.url);
+  
   var now = new Date();
   var suffix = 'client='+REPORTED_CLIENT_NAME+'&ck='+now.getTime();
   if (this.url.indexOf('?') == -1) {

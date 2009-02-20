@@ -12,6 +12,8 @@ function Reader() {
   commandsFeeds.onclick = this.showListing.bind(this);
   reload.onclick = this.reload.bind(this);  
   markRead.onclick = this.markRead.bind(this);
+  
+  
 }
 
 /**
@@ -22,6 +24,7 @@ Reader.prototype.login = function() {
   mainDiv.visible = true;  
   gadget.draw();
   this.reload();
+  this.startTimeout();
 }
 
 /**
@@ -32,7 +35,9 @@ Reader.prototype.logout = function() {
   
   loginDiv.visible = true;
   mainDiv.visible = false;  
-  gadget.draw();  
+  gadget.draw(); 
+  
+  this.clearTimeout();  
 }
 
 /**
@@ -41,6 +46,39 @@ Reader.prototype.logout = function() {
 Reader.prototype.reset = function() {
   listing.reset();
   feedContent.removeAllElements();
+}
+
+/**
+* Start refresh timer
+*/
+Reader.prototype.startTimeout = function() {
+  this.clearTimeout();
+  this.timer = view.setTimeout(this.reloadUnreadCount.bind(this), CONNECTION.REFRESH_INTERVAL);
+};
+
+/**
+* Clear refresh timer
+*/
+Reader.prototype.clearTimeout = function() {
+  if (this.timer) {
+    view.clearTimeout(this.timer);
+    this.timer = null;
+  }
+};
+
+/**
+* Periodic reload of unread count
+*/
+Reader.prototype.reloadUnreadCount = function() {
+  this.startTimeout();  
+
+  if (loading.visible) return;
+  if (!listingContent.visible) return;
+  if (!listing.folders || !listing.feeds) return;
+  if (!listing.folders['root'] || !listing.folders['all']) return;
+
+  listing.saveScroll();  
+  listing.reloadUnreadCount(true);
 }
 
 /**

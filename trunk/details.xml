@@ -120,8 +120,8 @@
         <img name="icon" x="5" y="8" width="12" height="9" src="images\details-toolbar-email.png" enabled="true" cursor="hand"/>
         <a name="link" x="19" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&EMAIL;</a>      
       </div>
-      <div name="unread" height="23">
-        <img name="icon" x="5" y="7" width="12" height="10" src="images\details-toolbar-unread-off.png" enabled="true" cursor="hand"/>
+      <div name="keep" height="23">
+        <img name="icon" x="5" y="7" width="12" height="10" src="images\details-toolbar-keep-off.png" enabled="true" cursor="hand"/>
         <a name="link" x="20" y="4" height="18" font="helvetica" size="8" color="#0252a5" underline="false">&KEEP_UNREAD;</a>      
       </div>
       <div name="tag" height="23">

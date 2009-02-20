@@ -23,12 +23,20 @@ Details.prototype.onOpen = function() {
 
   this.editAPI = new EditAPI(this.article);
 
+  this.article.keep = false;
+  
   if (!this.article.read) {
     this.article.read = true;  
     this.editAPI.call('MarkRead');
     if (!this.feed.isAlwaysShowUnread) {
       this.feed.unread--;
     }
+  }
+
+  if (!this.article.fresh) {
+    keep.visible = false;
+  } else {
+    this.doKeep(true);  
   }
 
   this.doStar(true);
@@ -68,6 +76,8 @@ Details.prototype.draw = function() {
 
   for (var i=0; i<toolbar.children.count; i++) {
     var div = toolbar.children.item(i);
+    if (!div.visible) continue;
+    
     var icon = div.children.item('icon');
     var link = div.children.item('link');
     var active = div.children.item('active');
@@ -190,7 +200,7 @@ Details.prototype.drawTag = function(x) {
     var text = div.children.item('text');
 
     if (this.tags.length) {
-      link.innerText = STRINGS.EDIT_TAG;
+      link.innerText = (this.tags.length > 1) ? STRINGS.EDIT_TAGS : STRINGS.EDIT_TAG;
     }
     text.visible = false;
   
@@ -199,12 +209,21 @@ Details.prototype.drawTag = function(x) {
     }
   
     if (text && this.tags.length) {
-      text.innerText = this.tags[0];   
-      if (toolbar.width > x + labelCalcWidth(text)) {
-        link.innerText = STRINGS.EDIT_TAG+':';
-        text.x = link.x + labelCalcWidth(link) - 3;
-        text.visible = true;    
-        div.width += labelCalcWidth(text) - 3;
+      var tags = this.tags.slice();
+      var len = tags.length;
+      var width = div.width;      
+      
+      for (var i=0; i<len; i++) {
+        text.innerText = tags.join(', ');   
+        if (toolbar.width > x + labelCalcWidth(text)) {
+          link.innerText = link.innerText+':';
+          text.x = link.x + labelCalcWidth(link) - 3;
+          text.visible = true;    
+          div.width = width + labelCalcWidth(text);
+          break;
+        } else {
+          tags.pop();
+        }
       }
     }
     if (!this.tags.length) {
@@ -384,28 +403,38 @@ Details.prototype.doEmail = function() {
 }
 
 /**
- * Toolbar function: mark article as unread
+ * Toolbar function: keep article marked to keep
  */
-Details.prototype.doUnread = function() {
-  var icon = unread.children.item('icon');
+Details.prototype.doKeep = function(init) {
+  var icon = keep.children.item('icon');
 
-  if (this.article.read) {
-    this.article.read = false;
-    icon.src = 'images\\details-toolbar-unread-on.png';
-    this.editAPI.call('MarkUnread');
-    if (!this.feed.isAlwaysShowUnread) {
-      this.feed.unread++;
-    }
-  } else {
-    this.article.read = true;
-    icon.src = 'images\\details-toolbar-unread-off.png';
+  if (init) {
+    // don't toggle star on init
+    this.article.keep = !this.article.keep;
+    this.article.read = !this.article.read;    
+  }
+
+  if (this.article.keep) {
+    this.article.keep = false;
+    this.article.read = true;    
+    icon.src = 'images\\details-toolbar-keep-off.png';
     this.editAPI.call('MarkRead');
-    if (!this.feed.isAlwaysShowUnread) {
+    if (!init && !this.feed.isAlwaysShowUnread) {
       this.feed.unread--;
     }
+  } else {
+    this.article.keep = true;
+    this.article.read = false;        
+    icon.src = 'images\\details-toolbar-keep-on.png';
+    this.editAPI.call('MarkUnread');
+    if (!init && !this.feed.isAlwaysShowUnread) {
+      this.feed.unread++;
+    }
   }
-  
-  this.draw();
+
+  if (init) {
+    this.draw();
+  }
 }
 
 /**

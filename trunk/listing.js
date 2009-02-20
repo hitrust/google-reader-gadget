@@ -66,8 +66,8 @@ Listing.prototype.refresh = function() {
       folder.refreshFeed(item);
     }
   }
-
-  if (this.folders['friends'].unread || this.show == 'all') {  
+  
+  if (this.folders['friends'] && (this.folders['friends'].unread || this.show == 'all')) {  
     friendsItems.visible = (this.friends.length > 0);
     friends.visible = (this.friends.length > 0);
     
@@ -207,14 +207,19 @@ Listing.prototype.saveFriendsList = function(responseText) {
     return false;     
   }
   
-  this.friends = json.friends;
-  if (this.friends && this.friends.length) {
-    for (var i=0; i<this.friends.length; i++) {
-      var friend = this.friends[i];
+  this.friends = [];
+  if (json.friends && json.friends.length) {
+    for (var i=0; i<json.friends.length; i++) {
+      var friend = json.friends[i];
       if (friend.contactId == "-1") {
         this.displayName = friend.displayName;
         if (friend.emailAddresses.length) {
           this.emailAddress = friend.emailAddresses[0];
+        }
+      }
+      if (friend.types) {
+        if (friend.types.indexOf(1) != -1) {
+          this.friends.push(friend);
         }
       }
     }

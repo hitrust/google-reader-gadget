@@ -97,6 +97,8 @@ Feed.prototype.parse = function() {
       var article = this.feed.items[i];
       
       this.feed.items[i].read = false;
+      this.feed.items[i].keep = false;
+      this.feed.items[i].fresh = false;
       this.feed.items[i].starred = false;
 
       this.feed.items[i].srcTitle = (article.origin && article.origin.title) ? article.origin.title : this.title;
@@ -132,6 +134,12 @@ Feed.prototype.parse = function() {
         if (category.match(/user\/(.*?)\/read$/)) {
           this.feed.items[i].read = true;
         }
+        if (category.match(/user\/(.*?)\/fresh$/)) {
+          this.feed.items[i].fresh = true;
+        }
+        if (category.match(/user\/(.*?)\/kept-unread$/)) {
+          this.feed.items[i].keep = true;
+        }                
         if (category.match(/user\/(.*?)\/starred$/)) {
 
           this.feed.items[i].starred = true;

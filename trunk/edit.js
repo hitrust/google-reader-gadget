@@ -186,6 +186,7 @@ EditAPI.prototype.editMarkRead = function() {
 
   this.data = { 'i': this.item.id, 
                'a': 'user/-/state/com.google/read', 
+               'r': 'user/-/state/com.google/kept-unread',                
                'ac': 'edit'
              };
 }
@@ -199,6 +200,8 @@ EditAPI.prototype.editMarkUnread = function() {
 
   this.data = { 'i': this.item.id, 
                'r': 'user/-/state/com.google/read', 
+               'a': 'user/-/state/com.google/kept-unread',                
+               'a': 'user/-/state/com.google/tracking-kept-unread',
                'ac': 'edit'
              };
 }
