@@ -5,6 +5,8 @@ function CustomScrollbar(container) {
   this.halt = {}; 
   this.container = container;
   this.saveY = false;
+  this.callback = false;
+  this.positionY = 0;
 
   scrollbarBar.onmousedown = this.startBar.bind(this);
   scrollbarBar.onmousemove = this.dragBar.bind(this);
@@ -19,6 +21,29 @@ function CustomScrollbar(container) {
   view.onmousewheel = this.wheel.bind(this);
   window.onkeydown = this.keydown.bind(this);
   window.onkeyup = this.keyup.bind(this);  
+}
+
+/**
+ * Set callback function for scollbar lazy load
+ */
+CustomScrollbar.prototype.setCallback = function(callback) {
+  this.callback = callback;
+}
+
+/**
+ * Callback function for scollbar
+ */
+CustomScrollbar.prototype.afterScroll = function() {    
+  if (this.callback) this.callback();
+}
+
+
+/**
+ * Callback function for scollbar
+ */
+CustomScrollbar.prototype.save = function(y) {  
+  this.saveY = -this.container.content.y;
+  this.shouldRestore = true;
 }
 
 /**
@@ -57,21 +82,21 @@ CustomScrollbar.prototype.keydown = function() {
  * Shortcut functions
  */
 CustomScrollbar.prototype.scrollTo = function(y) {  
-  scrollbarBar.y = y;
+  this.positionY = y;
   this.scroll();            
 }
 
 CustomScrollbar.prototype.position = function(y) {  
-  return scrollbarBar.y;
+  return this.positionY;
 }
 
 CustomScrollbar.prototype.scrollBottom = function() {  
-  scrollbarBar.y = this.max();
+  this.positionY = this.max();
   this.scroll();            
 }
 
 CustomScrollbar.prototype.scrollTop = function() {    
-  scrollbarBar.y = this.min();
+  this.positionY = this.min();
   this.scroll();  
 }
 
@@ -133,9 +158,9 @@ CustomScrollbar.prototype.startUp = function() {
   var time = (scrollbarBar.height && scrollbarTrack.height) ? 100 / (scrollbarBar.height / scrollbarTrack.height) : 100;
   
   this.up = view.beginAnimation(function() {
-    scrollbarBar.y = event.value;
+    this.positionY = event.value;
     this.scroll();
-  }.bind(this), scrollbarBar.y, this.min(), time * this.ratio());
+  }.bind(this), this.positionY, this.min(), time * this.ratio());
 }
 
 /**
@@ -145,9 +170,9 @@ CustomScrollbar.prototype.startDown = function() {
   var time = (scrollbarBar.height && scrollbarTrack.height) ? 100 / (scrollbarBar.height / scrollbarTrack.height) : 100;
   
   this.down = view.beginAnimation(function() {
-    scrollbarBar.y = event.value;
+    this.positionY = event.value;
     this.scroll();    
-  }.bind(this), scrollbarBar.y, this.max(), time * (1 - this.ratio()));
+  }.bind(this), this.positionY, this.max(), time * (1 - this.ratio()));
 }
 
 /**
@@ -198,7 +223,15 @@ CustomScrollbar.prototype.max = function() {
  */
 CustomScrollbar.prototype.ratio = function() {    
   if (this.max() == this.min()) return 0;
-  return (scrollbarBar.y - this.min()) / (this.max() - this.min());
+  return (this.positionY - this.min()) / (this.max() - this.min());
+}
+
+/**
+ * Reposition scrollbar based on content area
+ */
+CustomScrollbar.prototype.reposition = function() { 
+  this.positionY = - this.container.content.y / (this.container.content.height - contentContainer.height) * (this.max() - this.min()) + this.min();
+  this.scroll();
 }
 
 /**
@@ -209,6 +242,7 @@ CustomScrollbar.prototype.scroll = function(shouldRestore) {
   if (maxY < 0) maxY = 0;
 
   var newY = maxY * this.ratio(); 
+  var prevY = this.container.content.y;
   
   if (shouldRestore && this.saveY) {
     this.container.content.y = -this.saveY;
@@ -221,6 +255,17 @@ CustomScrollbar.prototype.scroll = function(shouldRestore) {
   
   if (newY > maxY) this.container.content.y = -maxY;
   else this.container.content.y = -newY;
+
+  if (prevY > this.container.content.y) {
+    this.timer = view.setTimeout(this.afterScroll.bind(this), 300);
+  } else {
+    if (this.timer) {
+      view.clearTimeout(this.timer);
+      this.timer = null;
+    }
+  }
+  
+  scrollbarBar.y = this.positionY;
 }
 
 /**
@@ -231,11 +276,11 @@ CustomScrollbar.prototype.track = function() {
   var max = this.max();
 
   if (event.y < min)
-    scrollbarBar.y = min;
+    this.positionY = min;
   else if (event.y > max)
-    scrollbarBar.y = max;
+    this.positionY = max;
   else
-    scrollbarBar.y = event.y;
+    this.positionY = event.y;
     
   this.scroll();        
 }
@@ -250,12 +295,12 @@ CustomScrollbar.prototype.moveBar = function(moveY) {
   var max = this.max();
 
   if (y < 0) {
-    if (scrollbarBar.y > min)
-        scrollbarBar.y = (scrollbarBar.y + y > min) ? scrollbarBar.y + y : min;
+    if (this.positionY > min)
+        this.positionY = (this.positionY + y > min) ? this.positionY + y : min;
   }
   else if (y > 0) {
-    if (scrollbarBar.y < max)   
-        scrollbarBar.y = (scrollbarBar.y + y > max) ? max : scrollbarBar.y + y;
+    if (this.positionY < max)   
+        this.positionY = (this.positionY + y > max) ? max : this.positionY + y;
   }
 
   this.scroll();    
@@ -278,7 +323,7 @@ CustomScrollbar.prototype.dragBar = function() {
  */
 CustomScrollbar.prototype.draw = function() {
   
-  var scrollRatio = scrollbarTrack.height ? ((scrollbarBar.y - scrollbarUp.height) / (scrollbarTrack.height)) : 0;    
+  var scrollRatio = scrollbarTrack.height ? ((this.positionY - scrollbarUp.height) / (scrollbarTrack.height)) : 0;    
 
   scrollbar.x = this.container.content.width + 9;
   scrollbar.height = contentContainer.height - 5;
@@ -297,11 +342,11 @@ CustomScrollbar.prototype.draw = function() {
   var newY = scrollRatio * scrollbarTrack.height + scrollbarUp.height;
   
   if (newY < this.min())
-    scrollbarBar.y = this.min();
+    this.positionY = this.min();
   else if (newY > this.max())
-    scrollbarBar.y = this.max();
+    this.positionY = this.max();
   else
-    scrollbarBar.y = newY;  
+    this.positionY = newY;  
     
   this.scroll(true);        
 }

@@ -11,8 +11,14 @@ function Feed(id, title) {
   this.scroll = false;
   this.link = false;
   this.init = true;
+  this.isLoadingMore = false;
+  this.continuation = false;
+  this.noAllowContinuation = {};
   this.isAlwaysShowUnread = false;
   this.folders = {};  
+  
+  this.itemHeight = 36;
+  this.count = 20;    
 }
 
 /**
@@ -61,16 +67,63 @@ Feed.prototype.markRead = function() {
 Feed.prototype.reload = function() {
   if (loading.visible) return false;
 
-  gadget.token = false;
+  reader.scrollbar.setCallback(this.loadMore.bind(this));
 
+  gadget.token = false;
   this.scroll = false;  
+  this.continuation = false;
+  this.isLoadingMore = false;
+  this.noAllowContinuation = {};
+  
+  var flags = '?n='+this.count;
+  if (this.show == 'new') {
+    flags += '&xt=user/-/state/com.google/read';
+  }
   
   httpRequest.host = CONNECTION.READER_HOST;
-  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + encodeURIComponent(this.id);
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + encodeURIComponent(this.id) + flags;
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect('', this.getSuccess.bind(this), this.getError.bind(this));
   return true;
 }
+
+/**
+ * Load more feed data
+ */
+Feed.prototype.loadMore = function() {
+  if (this.noAllowContinuation[this.show]) {
+    return false;
+  }
+  if (!feedContent.visible || !reader.currentFeed) {
+    reader.scrollbar.callback = false;
+    return false;
+  }
+
+  if (loading.visible) return false;
+  if (!this.continuation) return false;
+
+  var height = reader.scrollbar.container.content.height - contentContainer.height;
+  var beneath = reader.scrollbar.container.content.y + height;
+
+  if (beneath < this.itemHeight * this.count * 0.25) {
+    gadget.token = false;
+    reader.scrollbar.save();
+    this.isLoadingMore = true;
+
+    var flags = '?n=' + this.count + '&c=' + this.continuation;
+    if (this.show == 'new') {
+      flags += '&xt=user/-/state/com.google/read';
+    }
+
+    httpRequest.host = CONNECTION.READER_HOST;
+    httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + encodeURIComponent(this.id) + flags;
+    httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+    httpRequest.connect('', this.getSuccess.bind(this), this.getError.bind(this));
+  }
+  
+  return true;
+}
+
 
 /**
  * Check if the reader is currently displaying this feed
@@ -94,12 +147,15 @@ Feed.prototype.saveScroll = function() {
 Feed.prototype.parse = function() {
   for (var i=0; i < this.feed.items.length ; i++) {
     try {
+      if (this.feed.items[i].touched) continue;
+
       var article = this.feed.items[i];
       
       this.feed.items[i].read = false;
       this.feed.items[i].keep = false;
       this.feed.items[i].fresh = false;
       this.feed.items[i].starred = false;
+      this.feed.items[i].touched = true;
 
       this.feed.items[i].srcTitle = (article.origin && article.origin.title) ? article.origin.title : this.title;
       this.feed.items[i].subtitle = this.feed.items[i].srcTitle;
@@ -128,7 +184,7 @@ Feed.prototype.parse = function() {
       this.feed.items[i].rawBody = content.content;
   
       this.feed.items[i].tags = [];
-      
+            
       for (var j=0; j < article.categories.length ; j++) {
         var category = article.categories[j];
         if (category.match(/user\/(.*?)\/read$/)) {
@@ -193,7 +249,7 @@ Feed.prototype.refresh = function() {
       if (article.read && this.show != 'all') continue;
     }
 
-    var element = feedContent.appendElement('<div height="36" cursor="hand" enabled="true" />');
+    var element = feedContent.appendElement('<div height="'+this.itemHeight+'" cursor="hand" enabled="true" />');
 
     var star = element.appendElement('<div y="10" width="13" height="13" background="images/star-on.png" enabled="true" cursor="hand" />');
     star.onclick = this.doStar.bind(this, star, this.feed.items[i]);
@@ -274,18 +330,39 @@ Feed.prototype.draw = function() {
  * Process feed data
  */
 Feed.prototype.getSuccess = function(responseText) {
-  this.feed = responseText.evalJSON()
-  if (!this.feed) {
+  var newFeed = responseText.evalJSON();
+  if (!newFeed) {
     errorMessage.display(ERROR_MALFORMED_FEED);
     return; 
   }
+
+  if (this.continuation && this.feed) {
+    this.feed.items = this.feed.items.concat(newFeed.items);
+  } else {
+    this.feed = newFeed;
+  }
+
+  this.continuation = newFeed.continuation;
 
   this.parse();
   this.refresh();
   this.draw();
   
+  if (this.isLoadingMore) {
+    reader.scrollbar.draw();
+    reader.draw();
+  
+    var prevScrollY = reader.scrollbar.positionY;
+    reader.scrollbar.reposition();
+    if (reader.scrollbar.positionY == prevScrollY) {
+      this.noAllowContinuation[this.show] = true;
+    }
+
+    return;
+  }
+
   reader.currentFeed = this;
-  reader.showFeed();
+  reader.showFeed();    
 }
 
 /**
