@@ -439,7 +439,7 @@ Feed.prototype.getSuccess = function(responseText) {
   } else {
     showItems.visible = false;
     showSearchItems.visible = true;  
-    showSearchItems.innerText = 'Search for "'+search.value.trim()+'"';
+    showSearchItems.innerText = STRINGS.SEARCH_FOR+' "'+search.value.trim()+'"';
   }
 
   if (this.continuation && this.feed) {

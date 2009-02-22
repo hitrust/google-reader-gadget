@@ -129,8 +129,8 @@ Reader.prototype.showListing = function() {
   showSearchItems.innerText = '';
   showItems.visible = true;
     
-  showNewItems.innerText = 'updated';
-  showAllItems.innerText = 'all';
+  showNewItems.innerText = STRINGS.UPDATED;
+  showAllItems.innerText = STRINGS.ALL;
   showLine.show(listing.show);
   
   if (this.currentFeed) {
@@ -181,7 +181,7 @@ Reader.prototype.showFeed = function() {
   listing.saveScroll();
 
   showLine.update();
-  showAllItems.innerText = 'all items';
+  showAllItems.innerText = STRINGS.ALL_ITEMS_LOWER;
   showLine.show(this.currentFeed.show);
 
   this.content = feedContent;
