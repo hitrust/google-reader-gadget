@@ -332,7 +332,7 @@ Feed.prototype.parse = function() {
  * Load feed contents
  */
 Feed.prototype.refresh = function() {
-  if (!this.feed.items || !this.feed.items.length) return;
+  if (!this.feed.items) return;
 
   feedContent.removeAllElements();
 
