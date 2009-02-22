@@ -35,14 +35,7 @@ Main.prototype.onDetailsViewFeedback = function(detailsViewFlags) {
     
       if (feedContent.visible) {
         showLine.update();        
-        reader.showFeed();
-
-        if (reader.currentFeed.scroll) {
-          reader.scrollbar.scrollTo(reader.currentFeed.scroll);
-        } else {
-          reader.scrollbar.scrollTop();
-        }
-          
+        reader.showFeed();        
       }
     }
   }

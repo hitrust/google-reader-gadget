@@ -2,8 +2,8 @@
  * Constructor for ShowLine class.
  */
 function ShowLine() {
-  showNewItems.onclick = this.show.bind(this, 'new');
-  showAllItems.onclick = this.show.bind(this, 'all');
+  showNewItems.onclick = this.show.bind(this, 'new', true);
+  showAllItems.onclick = this.show.bind(this, 'all', true);
 }
 
 /**
@@ -51,7 +51,7 @@ ShowLine.prototype.update = function() {
 /**
  * Toggle what to show
  */
-ShowLine.prototype.show = function(what) {
+ShowLine.prototype.show = function(what, forceReload) {
   switch(what) {
     case 'new':
       showNewItems.enabled = false;
@@ -66,7 +66,11 @@ ShowLine.prototype.show = function(what) {
 
   if (feedContent.visible && reader.currentFeed) {
     reader.currentFeed.show = what;
-    reader.currentFeed.refresh();
+    if (forceReload) {
+      reader.currentFeed.reload();
+    } else {
+      reader.currentFeed.refresh();
+    }
     reader.scrollbar.saveY = false;
     reader.draw();  
   } else if (listingContent.visible) {

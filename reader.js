@@ -109,6 +109,8 @@ Reader.prototype.reload = function() {
 * Show feed listing
 */
 Reader.prototype.showListing = function() {
+  this.scrollbar.shouldCallback = false;
+  
   title.innerText = STRINGS.FEEDS;
 
   feedContent.visible = false;
