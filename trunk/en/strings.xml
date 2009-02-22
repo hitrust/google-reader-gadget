@@ -97,6 +97,9 @@
     The feed data could not be recognized.
     Try again later.
   </ERROR_MALFORMED_FEED>
+  <ERROR_NO_RESULTS>
+    There were no results for your search.
+  </ERROR_NO_RESULTS>
   
   <!-- Login error messages -->
   <ERROR_BAD_AUTH>
