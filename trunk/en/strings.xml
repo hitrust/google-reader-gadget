@@ -154,7 +154,9 @@
   <SHOW>Show</SHOW>
   <UPDATED>updated</UPDATED>
   <ALL>all</ALL>
+  <ALL_ITEMS_LOWER>all items</ALL_ITEMS_LOWER>
   <ALL_ITEMS>All items</ALL_ITEMS>
+  <SEARCH_FOR>Search for</SEARCH_FOR>
   <STARRED_ITEMS>Starred items</STARRED_ITEMS>
   <YOUR_STUFF>Your stuff</YOUR_STUFF>
   <SHARED_ITEMS>Shared items</SHARED_ITEMS>
