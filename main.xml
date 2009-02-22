@@ -88,6 +88,7 @@
             <div name="showItemsDivider" width="1" y="2" height="12" background="#adb5be" />
             <a name="showAllItems" color="#282828" bold="true" font="helvetica" size="8" trimming="character-ellipsis" enabled="false">&ALL;</a>
           </div>
+          <label name="showSearchItems" height="18" y="28" color="#333333" bold="true" font="helvetica" size="8" visible="false" />
           
           <button name="reload" y="31" width="9" image="images\reload.png" downImage="images\reload-hover.png" overImage="images\reload-hover.png" enabled="true" cursor="hand" />
           

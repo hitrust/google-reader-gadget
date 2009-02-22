@@ -113,13 +113,22 @@ Reader.prototype.showListing = function() {
   
   title.innerText = STRINGS.FEEDS;
 
+  if (searchArea.visible && this.currentFeed) {
+    searchField.close(true);
+    this.currentFeed.feed = false;
+  }
+
   feedContent.visible = false;
   listingContent.visible = true;
   commandsFeeds.visible = false;
   commandsClose.visible = this.currentFeed ? true : false;
   commandsSearch.visible = false;
   markRead.visible = false;
-  
+
+  showSearchItems.visible = false;
+  showSearchItems.innerText = '';
+  showItems.visible = true;
+    
   showNewItems.innerText = 'updated';
   showAllItems.innerText = 'all';
   showLine.show(listing.show);
@@ -153,13 +162,20 @@ Reader.prototype.showFeed = function() {
     this.currentFeedUnread = this.currentFeed.unread;
   }
   
+  if (this.currentFeed && !this.currentFeed.feed) {
+    this.currentFeed.reload();
+    return;
+  }
+  
   title.innerText = this.currentFeed.title;
 
   feedContent.visible = true;
   listingContent.visible = false;
   commandsFeeds.visible = true;
   commandsClose.visible = false;
-  commandsSearch.visible = true;
+  if (!searchArea.visible) {
+    commandsSearch.visible = true;
+  }
   markRead.visible = true;
 
   listing.saveScroll();

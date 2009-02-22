@@ -11,6 +11,8 @@ function ShowLine() {
  */
 ShowLine.prototype.draw = function() {
   showItems.width = titleStatusContent.width - (14 + reload.width);    
+  showSearchItems.width = titleStatusContent.width - (14 + reload.width);    
+
   reload.x = showItems.width + 7;
 
   showNewItems.x = labelCalcWidth(showLabel) - 2;

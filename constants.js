@@ -19,6 +19,7 @@ var CONNECTION = {
   READER_URL: 'http://www.google.com/reader/api/0/',
   EMAIL_URL: 'http://www.google.com/reader/email-this',
   STREAM_PREFIX: 'stream/contents/',
+  SEARCH_PREFIX: 'search/items/ids?output=json&q=',
   API_SUBSCRIPTIONS: 'subscription/list?output=json',
   API_UNREADCOUNT: 'unread-count?all=true&output=json',  
   API_SORTORDER: 'preference/stream/list?output=json',
@@ -33,49 +34,6 @@ var UI = {
   MIN_HEIGHT: 200,  
   MIN_DATE_WIDTH: 85,
   ERROR_MESSAGE_TIMEOUT: 3000
-};
-
-var FILE_TYPES = {
-  'doc': 'document',
-  'dot': 'document',
-  'pdf': 'document',
-  'xls': 'spreadsheet',
-  'xlb': 'spreadsheet',
-  'xlt': 'spreadsheet',
-  'csv': 'document',
-  'wks': 'spreadsheet',
-  '123': 'spreadsheet',
-  'ppt': 'presentation',
-  'pps': 'presentation',
-  'prc': 'presentation',  
-  'htm': 'document',
-  'html': 'document',
-  'rtf': 'document'
-};
-
-var MIME_TYPES = {
-  'doc': 'application/msword',
-  'dot': 'application/msword',
-  'pdf': 'application/pdf',
-  'xls': 'application/vnd.ms-excel',
-  'xlb': 'application/vnd.ms-excel',
-  'xlt': 'application/vnd.ms-excel',
-  'csv': 'text/csv',
-  'wks': 'application/vnd.ms-excel',
-  '123': 'application/vnd.ms-excel',
-  'ppt': 'application/vnd.ms-powerpoint',
-  'pps': 'application/vnd.ms-powerpoint',
-  'prc': 'application/vnd.ms-powerpoint',
-  'htm': 'text/html',
-  'html': 'text/html',
-  'rtf': 'text/rtf'
-};
-
-var NEW_DOC = {
-  'newDocumentDocument': 'http://docs.google.com/MiscCommands?command=newdoc&redirectToDocument=true&hl=en',
-  'newDocumentSpreadsheet': 'http://spreadsheets.google.com/ccc?new&hl=en',
-  'newDocumentPresentation': 'http://docs.google.com/DocAction?action=new_presentation&source=doclist&hl=en',
-  'newDocumentForm': 'http://spreadsheets.google.com/newform?hl=en'
 };
 
 var LOGIN_ERRORS = {

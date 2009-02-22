@@ -17,6 +17,9 @@ function Feed(id, title) {
   this.isAlwaysShowUnread = false;
   this.folders = {};  
   
+  this.searchResults = [];
+  this.searchStart = 0;
+  
   this.itemHeight = 36;
   this.count = 20;    
 }
@@ -62,12 +65,73 @@ Feed.prototype.markRead = function() {
 }
 
 /**
+* Search feed 
+*/
+Feed.prototype.search = function() {
+  if (loading.visible) return false;
+
+  var flags = '&num=1000';
+  flags += '&s='+encodeURIComponent(this.id);
+  
+  httpRequest.host = CONNECTION.READER_HOST;
+  httpRequest.url = CONNECTION.READER_URL + CONNECTION.SEARCH_PREFIX + encodeURIComponent(search.value.trim()) + flags;    
+  httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+  httpRequest.connect('', this.getSearchIDs.bind(this), this.getError.bind(this));
+}
+
+/**
+* Get search data
+*/
+Feed.prototype.getSearchIDs = function(responseText) {
+  var results = responseText.evalJSON();
+  if (!results || !results.results || !results.results.length) {
+    errorMessage.display(ERROR_NO_RESULTS);
+    return; 
+  }
+
+  this.searchResults = [];
+  for (var i=0; i<results.results.length; i++) {
+    this.searchResults.push(results.results[i].id);
+  }
+
+  reader.scrollbar.setCallback(this.loadMoreSearch.bind(this));
+
+  gadget.token = false;
+  this.scroll = false;  
+  this.continuation = false;
+  this.isLoadingMore = false;
+  this.noAllowContinuation = {};
+  
+  this.searchStart = 0;
+  
+  var editAPI = new EditAPI(this, this.getSuccess.bind(this));
+  editAPI.call('Search');
+
+  return true;
+}
+
+Feed.prototype.closeSearch = function(noReload) {
+  if (!this.searchResults || !this.searchResults.length) {
+    return;
+  }
+  
+  this.searchResults = [];
+  this.searchStart = 0;
+
+  if (!noReload) {
+    this.reload();
+  }
+}
+
+
+/**
 * Load feed data
 */
 Feed.prototype.reload = function() {
   if (loading.visible) return false;
 
   reader.scrollbar.setCallback(this.loadMore.bind(this));
+  this.searchResults = [];
 
   gadget.token = false;
   this.scroll = false;  
@@ -84,6 +148,37 @@ Feed.prototype.reload = function() {
   httpRequest.url = CONNECTION.READER_URL + CONNECTION.STREAM_PREFIX + encodeURIComponent(this.id) + flags;
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect('', this.getSuccess.bind(this), this.getError.bind(this));
+  return true;
+}
+
+/**
+ * Load more search results
+ */
+Feed.prototype.loadMoreSearch = function() {
+  if (this.noAllowContinuation['search']) {
+    return false;
+  }
+  if (!feedContent.visible || !reader.currentFeed) {
+    reader.scrollbar.callback = false;
+    return false;
+  }
+
+  if (loading.visible) return false;
+  if (!this.searchResults || !this.searchResults.length) return false;
+  
+  var height = reader.scrollbar.container.content.height - contentContainer.height;
+  var beneath = reader.scrollbar.container.content.y + height;
+
+  if (beneath < this.itemHeight * this.count * 0.25) {    
+    reader.scrollbar.save();
+    this.isLoadingMore = true;
+    this.continuation = true;
+    this.searchStart += this.count;
+
+    var editAPI = new EditAPI(this, this.getSuccess.bind(this));
+    editAPI.call('Search');
+  }
+  
   return true;
 }
 
@@ -109,7 +204,7 @@ Feed.prototype.loadMore = function() {
     gadget.token = false;
     reader.scrollbar.save();
     this.isLoadingMore = true;
-
+    
     var flags = '?n=' + this.count + '&c=' + this.continuation;
     if (this.show == 'new') {
       flags += '&xt=user/-/state/com.google/read';
@@ -336,6 +431,17 @@ Feed.prototype.getSuccess = function(responseText) {
     return; 
   }
 
+  if (!this.searchResults || !this.searchResults.length) {
+    showItems.visible = true;  
+    showSearchItems.visible = false; 
+    showSearchItems.innerText = ''; 
+    searchField.reset();
+  } else {
+    showItems.visible = false;
+    showSearchItems.visible = true;  
+    showSearchItems.innerText = 'Search for "'+search.value.trim()+'"';
+  }
+
   if (this.continuation && this.feed) {
     this.feed.items = this.feed.items.concat(newFeed.items);
   } else {
@@ -356,6 +462,7 @@ Feed.prototype.getSuccess = function(responseText) {
     reader.scrollbar.reposition();
     if (reader.scrollbar.positionY == prevScrollY) {
       this.noAllowContinuation[this.show] = true;
+      this.noAllowContinuation['search'] = true;
     }
 
     return;

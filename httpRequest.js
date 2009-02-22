@@ -112,6 +112,7 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
   this.failedHandler = failedHandler;
   this.packet.abort();
   this.packet.onreadystatechange = this.receivedData.bind(this);
+
   if (data) {
     this.packet.open('POST', this.url, true);
     if (!this.headers['Content-Type'] && !headers['Content-Type']) {
@@ -194,8 +195,12 @@ HTTPRequest.prototype.hideLoading = function() {
 
 HTTPRequest.prototype.onFailure = function() {
   if (this.failedHandler !== null) {
-    var status = this.packet.readyState == 4 ? this.packet.status : 0;
-    this.failedHandler(status, this.packet.responseText);
+    try {
+      var status = this.packet.readyState == 4 ? this.packet.status : 0;
+      this.failedHandler(status, this.packet.responseText);
+    } catch(e) {
+      errorMessage.display(ERROR_SERVER_OR_NETWORK);    
+    }
   } else {
     errorMessage.display(ERROR_SERVER_OR_NETWORK);
   }

@@ -1,7 +1,7 @@
 /**
  * Constructor for Edit api functions
  */
-function EditAPI(item) {
+function EditAPI(item, callback) {
   try {
     this.gadget = gadget;
   } catch (e) {}
@@ -14,6 +14,7 @@ function EditAPI(item) {
   this.item = item;
   this.halt = false;
   this.command = false;
+  this.callback = callback;
 }
 
 /**
@@ -29,13 +30,36 @@ EditAPI.prototype.call = function(fn) {
 
   if (eval('this.edit'+fn)) {
     this.halt = true;
-    eval('this.edit'+fn+'.apply(this, __arguments);');
-    this._apiCall();
+    try {
+      eval('this.edit'+fn+'.apply(this, __arguments);');
+      this._apiCall();
+    } catch(e) { 
+      this.halt = false;
+    }
   }
 }
 
 
 // MESSAGE FUNCTIONS HERE
+
+/**
+ * Change message tags
+ */
+EditAPI.prototype.editSearch = function() {
+
+  this.command = 'stream/items/contents';
+  if (this.item.searchStart) {
+    this.command += '?sa=N&start='+this.item.searchStart;
+  }
+
+  var ids = this.item.searchResults.slice(this.item.searchStart, this.item.searchStart + this.item.count);
+  if (!ids.length) {    
+    throw new Exception();
+    return;
+  }
+  
+  this.data = { 'i': ids };
+}
 
 /**
  * Change message tags
@@ -224,7 +248,7 @@ EditAPI.prototype._apiCall = function(secondTry) {
   var errorCallback = secondTry ? this.getAPIError2.bind(this) : this.getAPIError.bind(this);
 
   httpRequest.host = CONNECTION.READER_HOST;
-  httpRequest.url = this.command ? CONNECTION.READER_URL + this.command : this.url
+  httpRequest.url = this.command ? CONNECTION.READER_URL + this.command : this.url;
   httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
   httpRequest.connect(this.data.toQueryString(), successCallback, errorCallback);
 }
@@ -279,6 +303,12 @@ EditAPI.prototype.getTokenSuccess2 = function(responseText) {
  * Check for API call success.
  */
 EditAPI.prototype.getAPISuccess = function(responseText) {
+  if (this.callback) {
+    this.callback(responseText);
+    this.halt = false;
+    return;
+  }
+
   if (this.command && responseText != 'OK') {
     this.token = false;
     this._apiCall(true);
@@ -290,12 +320,19 @@ EditAPI.prototype.getAPISuccess = function(responseText) {
  * Check for API call success, second try.
  */
 EditAPI.prototype.getAPISuccess2 = function(responseText) {
+  if (this.callback) {
+    this.callback(responseText);
+    this.halt = false;
+    return;
+  }
+
   if (this.command && responseText != 'OK') {
     this.token = false;
     errorMessage.display(ERROR_SERVER_OR_NETWORK);
     this.halt = false;
   }
   this.halt = false;
+  if (this.callback) this.callback();
 }
 
 EditAPI.prototype.getAPIError = function() {

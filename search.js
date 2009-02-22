@@ -2,7 +2,7 @@
  * Constructor for SearchField class.
  */
 function SearchField() {
-  commandsSearch.onclick = this.open.bind(this);
+  commandsSearch.onclick = this.open.bind(this);  
   
   search.onfocusout = this.blur.bind(this);
   search.onkeydown = this.keydown.bind(this);
@@ -31,17 +31,25 @@ SearchField.prototype.open = function() {
 }
 
 /**
- * Close search field
+ * Reset search field
  */
-SearchField.prototype.close = function() {
-//  var refresh = this.active;
-//  this.active = false;
-//  if (refresh) doclist.refresh();
-  
+SearchField.prototype.reset = function(arg) {
   searchArea.visible = false;
   commandsSearch.visible = true;
   search.value = '';
   gadget.draw();
+}
+
+
+/**
+ * Close search field
+ */
+SearchField.prototype.close = function(arg) {
+  if (reader.currentFeed) {
+    reader.currentFeed.closeSearch(arg);
+  }
+
+  this.reset();
 }
 
 /**
@@ -55,7 +63,9 @@ SearchField.prototype.keydown = function() {
       break;
       
     case KEYS.ENTER:
-      doclist.search();
+      if (reader.currentFeed) {        
+        reader.currentFeed.search();
+      }
       break;      
   }
 }
