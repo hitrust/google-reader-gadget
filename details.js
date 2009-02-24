@@ -209,7 +209,12 @@ Details.prototype.drawTag = function(x) {
     }
   
     if (text && this.tags.length) {
-      var tags = this.tags.slice();
+      // for some reason Array.slice() is buggy
+      // var tags = this.tags.slice();      
+      var tags = [];
+      for (var i=0; i<this.tags.length; i++) {
+        tags.push(this.tags[i]);
+      }
       var len = tags.length;
       var width = div.width;      
       
@@ -471,7 +476,7 @@ Details.prototype.tagSave = function() {
   }  
   this.editAPI.call('Tags', this.tags);
   this.article.tags = this.tags;
-  
+
   tagPane.visible = false; 
   this.drawTag();
 }

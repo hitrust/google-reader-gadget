@@ -28,7 +28,7 @@ LoginSession.prototype.setup = function() {
  */
 LoginSession.prototype.autologin = function() {
   if (options.getValue('token') && options.getValue('username')) {
-    this.token = options.getValue('token');
+    this.token = options.getValue('token');    
     this.username = options.getValue('username');
     username.innerText = this.username.toLowerCase();
     username.visible = true;    
