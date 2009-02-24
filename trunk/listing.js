@@ -73,7 +73,6 @@ Listing.prototype.refresh = function() {
     
     for (var i=0; i<this.friends.length; i++) {
       var friend = this.friends[i];
-      if (friend.contactId == "-1") continue;
       
       folder.refreshFriend(friend);    
     }
@@ -193,6 +192,7 @@ Listing.prototype.reload = function() {
 */
 Listing.prototype.getError = function() {
   httpRequest.hideLoading();
+  errorMessage.display(httpRequest.url);
   debug.error('error!');
 }
 
@@ -211,13 +211,13 @@ Listing.prototype.saveFriendsList = function(responseText) {
   if (json.friends && json.friends.length) {
     for (var i=0; i<json.friends.length; i++) {
       var friend = json.friends[i];
-      if (friend.contactId == "-1") {
+      if (friend.contactId == "-1" || friend.flags == "9") {
         this.displayName = friend.displayName;
         if (friend.emailAddresses.length) {
           this.emailAddress = friend.emailAddresses[0];
         }
       }
-      if (friend.types) {
+      else if (friend.types) {
         if (friend.types.indexOf(1) != -1) {
           this.friends.push(friend);
         }
@@ -270,7 +270,6 @@ Listing.prototype.saveSubscriptions = function(responseText) {
 
     for (var j=0; j<this.friends.length; j++) {
       var friend = this.friends[j];
-      if (friend.contactId == "-1") continue;
       
       this.feeds[friend.stream] = new Feed(friend.stream, friend.displayName);
     }   

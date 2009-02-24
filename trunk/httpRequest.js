@@ -4,7 +4,7 @@
 // @fileoverview Functions for server communications through XMLHttpRequest
 
 function createXhr() {
-  return new XMLHttpRequest();
+  return framework.google.betaXmlHttpRequest();
 }
 
 var httpRequest = new HTTPRequest();
@@ -122,19 +122,20 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
     this.packet.open('GET', this.url, true);    
   }
 
+  this.packet.setRequestHeader('Cookie', 'none');
+
   // custom headers
   for (var key in this.headers) {
     if (typeof this.headers[key] == 'string') {
-      this.packet.setRequestHeader(key, this.headers[key]);
+      this.packet.setRequestHeader(key, this.headers[key]);   
     }
   }
   for (var key in headers) {
     if (typeof headers[key] == 'string') {
-      this.packet.setRequestHeader(key, headers[key]);    
+      this.packet.setRequestHeader(key, headers[key]);      
     }
   }
 
-  this.packet.setRequestHeader('cookie', 'none');
   this.packet.setRequestHeader('Cache-Control', 'no-cache, no-transform');
   this.packet.setRequestHeader('Connection', 'close');
   this.packet.setRequestHeader('Host', this.host);  
