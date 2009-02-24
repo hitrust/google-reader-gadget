@@ -100,7 +100,7 @@ Main.prototype.draw = function() {
   var loadingWidth = labelCalcWidth(loadingLabel);
   loading.x = window.width - (loadingWidth + 12);  
   loading.width = loadingWidth; 
-   
+
   var searchingWidth = labelCalcWidth(searchingLabel);  
   searching.x = window.width - (searchingWidth + 12);
   searching.width = searchingWidth;

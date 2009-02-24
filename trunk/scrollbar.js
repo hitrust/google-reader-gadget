@@ -312,10 +312,10 @@ CustomScrollbar.prototype.moveBar = function(moveY) {
 CustomScrollbar.prototype.dragBar = function() {    
   if (!this.halt.drag) return;  
   this.halt.drag = false;
-
+  
   this.moveBar(event.y - this.start);
 
-  this.halt.drag = true;
+  view.setTimeout(function() { this.halt.drag = true; }.bind(this), 25);  
 }
 
 /**

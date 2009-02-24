@@ -192,7 +192,6 @@ Listing.prototype.reload = function() {
 */
 Listing.prototype.getError = function() {
   httpRequest.hideLoading();
-  errorMessage.display(httpRequest.url);
   debug.error('error!');
 }
 
@@ -216,6 +215,7 @@ Listing.prototype.saveFriendsList = function(responseText) {
         if (friend.emailAddresses.length) {
           this.emailAddress = friend.emailAddresses[0];
         }
+        this.userIds = friend.userIds;
       }
       else if (friend.types) {
         if (friend.types.indexOf(1) != -1) {
@@ -272,6 +272,7 @@ Listing.prototype.saveSubscriptions = function(responseText) {
       var friend = this.friends[j];
       
       this.feeds[friend.stream] = new Feed(friend.stream, friend.displayName);
+      this.feeds[friend.stream].isFriend = true;
     }   
   }
 
@@ -412,7 +413,7 @@ Listing.prototype._saveUnreadCount = function(responseText) {
 */
 Listing.prototype.updateUnreadCount = function(item) {
   if (!item) return;
-  item.link.innerText = item.title;
+  item.link.innerText = item.title.fromEntities();
   item.link.bold = (item.unread > 0);
   if (!item.link.bold) {
     item.link.color = item.alwaysShowUnread() ? '#105caa' : '#5b7691';    

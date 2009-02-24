@@ -18,6 +18,7 @@ function HTTPRequest() {
   this.headers = {};
   this.loadingIndicator = false;
   this.overrideLoading = false;
+  this.shouldShowLoading = true;
 }
 
 HTTPRequest.available = true;
@@ -178,7 +179,9 @@ HTTPRequest.prototype.onTimeout = function() {
 HTTPRequest.prototype.showLoading = function() {
   try {
     this.loadingIndicator = this.loadingIndicator || loading;
-    this.loadingIndicator.visible = true;
+    if (this.shouldShowLoading) {
+      this.loadingIndicator.visible = true;
+    }
   } catch(e) {
     debug.warning('Could not show loading image.');
   }  

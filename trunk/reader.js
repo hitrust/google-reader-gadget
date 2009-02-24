@@ -167,7 +167,7 @@ Reader.prototype.showFeed = function() {
     return;
   }
   
-  title.innerText = this.currentFeed.title;
+  title.innerText = this.currentFeed.title.fromEntities();
 
   feedContent.visible = true;
   listingContent.visible = false;
