@@ -11,6 +11,7 @@ function Feed(id, title) {
   this.scroll = false;
   this.link = false;
   this.init = true;
+  this.isFriend = true;
   this.isLoadingMore = false;
   this.continuation = false;
   this.noAllowContinuation = {};
@@ -253,9 +254,9 @@ Feed.prototype.parse = function() {
       this.feed.items[i].touched = true;
 
       this.feed.items[i].srcTitle = (article.origin && article.origin.title) ? article.origin.title : this.title;
-      this.feed.items[i].subtitle = this.feed.items[i].srcTitle;
+      this.feed.items[i].subtitle = this.feed.items[i].srcTitle.fromEntities();
       if (article.author) {
-        this.feed.items[i].subtitle += ' - '+article.author;
+        this.feed.items[i].subtitle += ' - '+article.author.fromEntities();
       }
       
       var content = article.content ? article.content : article.summary;
@@ -266,7 +267,8 @@ Feed.prototype.parse = function() {
           .stripTags()
           .replace(new RegExp('[\n|\r|\\s]+', 'gm'), ' ')
           .substring(0,400)
-          .trim();
+          .trim()
+          .fromEntities();
           
       // XXX: strip HTML from the article body for now
       this.feed.items[i].body = content.content
@@ -274,7 +276,10 @@ Feed.prototype.parse = function() {
           .replace(new RegExp('<br[^>]+>', 'igm'), "<br />\n")
           .stripTags()
           .trim()
-          .replace(new RegExp('[\n|\r]{3,}', 'gm'), "\n\n");
+          .replace(new RegExp('[\n|\r]{3,}', 'gm'), "\n\n")
+          .fromEntities();
+
+      this.feed.items[i].title = article.title.fromEntities();
 
       this.feed.items[i].rawBody = content.content;
   
@@ -295,9 +300,20 @@ Feed.prototype.parse = function() {
 
           this.feed.items[i].starred = true;
         }
-        if (category.match(/user\/(.*?)\/broadcast$/)) {
-          this.feed.items[i].shared = true;
-        }        
+        if (this.isFriend) {
+          if (listing.userIds && listing.userIds.length) {
+            for (var k=0; k<listing.userIds.length; k++) {
+              var x = new RegExp('user/'+listing.userIds[k]+'/state/com\.google/broadcast$');
+              if (category.match(x)) {
+                this.feed.items[i].shared = true;
+              }                
+            }
+          }        
+        } else {
+          if (category.match(/user\/(.*?)\/broadcast$/)) {
+            this.feed.items[i].shared = true;
+          }                
+        }
         var matches = category.match(/\/label\/([^\/]+)$/);
         if (matches && matches[1]) {
           this.feed.items[i].tags.push(matches[1]);
@@ -350,8 +366,11 @@ Feed.prototype.refresh = function() {
     star.onclick = this.doStar.bind(this, star, this.feed.items[i]);
     this.doStar(star, this.feed.items[i], true);
     
-    var titleLabel = element.appendElement('<label x="17" y="4" font="helvetica" size="8" bold="true" color="#161616" trimming="character-ellipsis"></label>');
+    var titleLabel = element.appendElement('<label x="17" y="4" font="helvetica" size="8" color="#161616" trimming="character-ellipsis"></label>');
     titleLabel.innerText = article.title;
+    if (!article.read) {
+      titleLabel.bold = true;
+    }
 
     var snippetLabel = element.appendElement('<label x="17" y="17" font="helvetica" size="8" color="#19642c" trimming="character-ellipsis"></label>');
     snippetLabel.innerText = article.snippet;

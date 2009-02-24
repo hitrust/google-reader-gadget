@@ -54,6 +54,19 @@ String.prototype.trim = function()
   return this.replace(/^\s*|\s*$/g,'');
 }
 
+// Converts character entities and a few common HTML entities
+String.prototype.fromEntities = function()
+{
+  return this.replace(/&#(\d+);/g,
+    function(wholematch, parenmatch1) { return String.fromCharCode(+parenmatch1); })
+    .replace(/&amp;/g, '&')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")   
+    .replace(/&nbsp;/g, " ")   
+    .replace(/&quot;/g, '"');
+}
+
 // Set the first letter of a string to upper case
 String.prototype.ucwords = function()
 {
