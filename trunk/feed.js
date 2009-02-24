@@ -368,14 +368,27 @@ Feed.prototype.refresh = function() {
     
     var titleLabel = element.appendElement('<label x="17" y="4" font="helvetica" size="8" color="#161616" trimming="character-ellipsis"></label>');
     titleLabel.innerText = article.title;
-    if (!article.read) {
-      titleLabel.bold = true;
-    }
 
-    var snippetLabel = element.appendElement('<label x="17" y="17" font="helvetica" size="8" color="#19642c" trimming="character-ellipsis"></label>');
+    var snippetLabel = element.appendElement('<label x="17" y="17" font="helvetica" size="8" trimming="character-ellipsis"></label>');
     snippetLabel.innerText = article.snippet;
 
-    element.onmouseover = function() { event.srcElement.background='#e1eef6'; }.bind(this);
+    if (article.read) {
+      titleLabel.bold = false;
+//      element.background = '#ececec';
+      snippetLabel.color = '#666666';
+    } else {
+      titleLabel.bold = true;
+      element.background = '#ffffff';
+      snippetLabel.color = '#19642c';      
+    }
+
+    element.onmouseover = function() { 
+      if (event.srcElement.children.item(1).bold == true) {
+        event.srcElement.background='#e1eef6'; 
+      } else {
+        event.srcElement.background='#ececec';       
+      }
+    }.bind(this);
     element.onmouseout = function() { event.srcElement.background=''; }.bind(this);
 
     element.onclick = function(i) { 
