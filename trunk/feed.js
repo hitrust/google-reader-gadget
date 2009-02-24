@@ -374,11 +374,9 @@ Feed.prototype.refresh = function() {
 
     if (article.read) {
       titleLabel.bold = false;
-//      element.background = '#ececec';
       snippetLabel.color = '#666666';
     } else {
       titleLabel.bold = true;
-      element.background = '#ffffff';
       snippetLabel.color = '#19642c';      
     }
 
