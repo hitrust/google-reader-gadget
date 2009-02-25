@@ -374,9 +374,11 @@ Feed.prototype.refresh = function() {
 
     if (article.read) {
       titleLabel.bold = false;
+      element.background = '#ececec';
       snippetLabel.color = '#666666';
     } else {
       titleLabel.bold = true;
+      element.background = '#ffffff';
       snippetLabel.color = '#19642c';      
     }
 
@@ -384,10 +386,17 @@ Feed.prototype.refresh = function() {
       if (event.srcElement.children.item(1).bold == true) {
         event.srcElement.background='#e1eef6'; 
       } else {
+        event.srcElement.background='#cedbe3';       
+      }
+    }.bind(this);
+
+    element.onmouseout = function() { 
+      if (event.srcElement.children.item(1).bold == true) {
+        event.srcElement.background='#ffffff'; 
+      } else {
         event.srcElement.background='#ececec';       
       }
     }.bind(this);
-    element.onmouseout = function() { event.srcElement.background=''; }.bind(this);
 
     element.onclick = function(i) { 
       gadget.detailsView.SetContent('', undefined, 'details.xml', false, 0);
