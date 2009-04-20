@@ -77,12 +77,6 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
     return;
   }
 
-  // Check if network is online.
-  if (!framework.system.network.online) {
-    this.onFailure();
-    return;
-  }
-
   if (this.isFile) {
     var filename = data;
     
