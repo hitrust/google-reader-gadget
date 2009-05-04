@@ -28,10 +28,10 @@ EditAPI.prototype.call = function(fn) {
     __arguments.push(arguments[n]);    
   }
 
-  if (eval('this.edit'+fn)) {
+  if (this['edit'+fn]) {
     this.halt = true;
     try {
-      eval('this.edit'+fn+'.apply(this, __arguments);');
+      this['edit'+fn].apply(this, __arguments);
       this._apiCall();
     } catch(e) { 
       this.halt = false;
