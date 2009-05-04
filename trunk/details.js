@@ -92,8 +92,8 @@ Details.prototype.draw = function() {
     }
     x += div.width;
     
-    eval('icon.onclick = this.do'+div.name.ucwords()+'.bind(this);');
-    eval('link.onclick = this.do'+div.name.ucwords()+'.bind(this);');
+    icon.onclick = this['do'+div.name.ucwords()].bind(this);
+    link.onclick = this['do'+div.name.ucwords()].bind(this);
   }
   
   this.drawTag(x);
