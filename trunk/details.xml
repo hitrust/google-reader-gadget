@@ -3,6 +3,7 @@
   <script src="date.js" />
   <script src="httpRequest.js" />  
   <script src="errorMessage.js" />  
+  <script src="json_sans_eval.js" />  
   <script src="util.js" />
   <script src="edit.js" />
   <script src="scrollbar.js" />
