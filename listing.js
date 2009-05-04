@@ -565,7 +565,7 @@ Listing.prototype.saveSortOrder = function(responseText) {
  */
 Listing.prototype.finish = function() {
   httpRequest.hideLoading();
-  // Reader.resetTryCount();
+  Reader.resetTryCount();
 
   if (this.init) {
     this.init = false;
