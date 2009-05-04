@@ -84,7 +84,7 @@ String.prototype.evalJSON = function()
 {
   try {
     if (!this.trim()) throw new Exception();    
-    var json = eval('(' + this + ')');    
+    var json = jsonParse(this);
   } catch (e) {  
     return false;
   }

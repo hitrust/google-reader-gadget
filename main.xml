@@ -6,6 +6,7 @@
   <script src="httpRequest.js" />  
   <script src="errorMessage.js" /> 
   <script src="edit.js" /> 
+  <script src="json_sans_eval.js" /> 
   <script src="search.js" />
   <script src="show.js" />
   <script src="scrollbar.js" />  
