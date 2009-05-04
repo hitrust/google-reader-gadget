@@ -78,17 +78,8 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
   }
 
   if (this.isFile) {
-    var filename = data;
-    
-    var stream = new ActiveXObject("ADODB.Stream");    
-    
-    stream.Type = 1;  // adTypeBinary 
-    stream.Open(); 
-    stream.LoadFromFile(filename);
-
-    data = stream.Read(-1); // adReadAll
-    stream.Close();
-    stream = null;
+    // NOT IMPLEMENTED.
+    debug.error('HTTPRequest::connect file input source is not implemented.');
   }
 
   //debug.error(this.url);
