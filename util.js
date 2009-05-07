@@ -49,10 +49,20 @@ function _typeOf(value) {
 }
 
 // Strips whitespace from beginning and end of string
-String.prototype.trim = function()
-{
+String.prototype.trim = function() {
   return this.replace(/^\s*|\s*$/g,'');
 }
+
+function isHttpUrl(s) {
+  return s.beginsWith('http://') || s.beginsWith('https://');
+}
+
+String.prototype.beginsWith = function(s) {
+  if (this.length < s.length) {
+    return false;
+  }
+  return this.substr(0, s.length) == s;
+};
 
 // Converts character entities and a few common HTML entities
 String.prototype.fromEntities = function()
