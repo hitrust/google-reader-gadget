@@ -16,12 +16,6 @@ function Reader() {
   
 }
 
-Reader.tryCount = 0;
-
-Reader.resetTryCount = function() {
-  Reader.tryCount = 0;
-};
-
 /**
  * Open reader after login
  */
@@ -54,7 +48,7 @@ Reader.prototype.reset = function() {
   feedContent.removeAllElements();
 }
 
-var REFRESH_INTERVAL_MS = 60 * 1000;
+var REFRESH_INTERVAL_MS = 6 * 1000;
 var MAX_REFRESH_INTERVAL_MS = 2 * 60 * 60 * 1000;
 
 /**
@@ -63,7 +57,7 @@ var MAX_REFRESH_INTERVAL_MS = 2 * 60 * 60 * 1000;
 Reader.prototype.startTimeout = function() {
   this.clearTimeout();
 
-  var nextRetryMs = Math.pow(2, Reader.tryCount) * REFRESH_INTERVAL_MS;
+  var nextRetryMs = Math.pow(2, httpRequest.failCount) * REFRESH_INTERVAL_MS;
 
   if (nextRetryMs > MAX_REFRESH_INTERVAL_MS) {
     nextRetryMs = MAX_REFRESH_INTERVAL_MS;
@@ -77,8 +71,6 @@ Reader.prototype.startTimeout = function() {
   nextRetryMs += jitter;
 
   debug.trace('Retry request in ' + nextRetryMs);
-
-  ++Reader.tryCount;
 
   this.timer = view.setTimeout(this.reloadUnreadCount.bind(this), nextRetryMs);
 };
