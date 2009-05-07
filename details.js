@@ -49,7 +49,7 @@ Details.prototype.onOpen = function() {
   this.tags = this.article.tags || [];
   
 
-  if (isHttpUrl(this.url)) {
+  if (isHttpUrl(this.article.url)) {
     title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
   } else {
     debug.error('Invalid protocol');
