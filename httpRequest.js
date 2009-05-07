@@ -19,6 +19,7 @@ function HTTPRequest() {
   this.loadingIndicator = false;
   this.overrideLoading = false;
   this.shouldShowLoading = true;
+  this.failCount = 0;
 }
 
 HTTPRequest.available = true;
@@ -183,6 +184,8 @@ HTTPRequest.prototype.hideLoading = function() {
 };
 
 HTTPRequest.prototype.onFailure = function() {
+  ++this.failCount;
+
   if (this.failedHandler !== null) {
     try {
       var status = this.packet.readyState == 4 ? this.packet.status : 0;
@@ -215,6 +218,9 @@ HTTPRequest.prototype.receivedData = function() {
     this.onFailure();
     return;
   }
+
+  this.failCount = 0;
+
   if (this.handler !== null) {
     this.handler(this.packet.responseText, this.packet.responseStream);
   }
