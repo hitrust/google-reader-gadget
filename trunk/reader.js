@@ -48,7 +48,7 @@ Reader.prototype.reset = function() {
   feedContent.removeAllElements();
 }
 
-var REFRESH_INTERVAL_MS = 6 * 1000;
+var REFRESH_INTERVAL_MS = 60 * 1000;
 var MAX_REFRESH_INTERVAL_MS = 2 * 60 * 60 * 1000;
 
 /**

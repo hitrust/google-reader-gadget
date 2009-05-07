@@ -159,6 +159,7 @@ HTTPRequest.prototype.onTimeout = function() {
   this.packet.abort();  
   setTimeout(HTTPRequest.finishedGracePeriod, CONNECTION.TIME_BETWEEN_REQUESTS);
   this.hideLoading();
+  ++this.failCount;
   this.onFailure();
 };
 
@@ -184,8 +185,6 @@ HTTPRequest.prototype.hideLoading = function() {
 };
 
 HTTPRequest.prototype.onFailure = function() {
-  ++this.failCount;
-
   if (this.failedHandler !== null) {
     try {
       var status = this.packet.readyState == 4 ? this.packet.status : 0;
@@ -212,6 +211,11 @@ HTTPRequest.prototype.receivedData = function() {
   setTimeout(HTTPRequest.finishedGracePeriod, CONNECTION.TIME_BETWEEN_REQUESTS);
   if (this.packet.status < 200 || this.packet.status >= 300) {
     debug.error('A transfer error has occured! Error = '+this.packet.status);
+
+    if (this.packet.status == 500 || this.packet.status == 503) {
+      ++this.failCount;
+    }
+
     if (this.overrideLoading) {
       this.hideLoading();  
     }
