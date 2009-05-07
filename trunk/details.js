@@ -48,7 +48,14 @@ Details.prototype.onOpen = function() {
   date.innerText = new Date(this.article.updated*1000).ago()+' '+STRINGS.AGO;
   this.tags = this.article.tags || [];
   
-  title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
+
+  if (isHttpUrl(this.url)) {
+    title.onclick = function() { framework.openUrl(this.article.url); }.bind(this)
+  } else {
+    debug.error('Invalid protocol');
+    title.onclick = null;
+  }
+
   body.height = labelCalcHeight(body);
 
   if (this.listing.friends) {

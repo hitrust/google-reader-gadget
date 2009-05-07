@@ -100,38 +100,43 @@ HTTPRequest.prototype.connect = function (data, handler, failedHandler, headers,
   this.packet.abort();
   this.packet.onreadystatechange = this.receivedData.bind(this);
 
-  if (data) {
-    this.packet.open('POST', this.url, true);
-    if (!this.headers['Content-Type'] && !headers['Content-Type']) {
-      this.packet.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');    
-    }
+  if (!isHttpUrl(this.url)) {
+    debug.error('Invalid protocol');
+    this.onFailure();
   } else {
-    this.packet.open('GET', this.url, true);    
-  }
-
-  this.packet.setRequestHeader('Cookie', 'none');
-
-  // custom headers
-  for (var key in this.headers) {
-    if (typeof this.headers[key] == 'string') {
-      this.packet.setRequestHeader(key, this.headers[key]);   
+    if (data) {
+      this.packet.open('POST', this.url, true);
+      if (!this.headers['Content-Type'] && !headers['Content-Type']) {
+        this.packet.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');    
+      }
+    } else {
+      this.packet.open('GET', this.url, true);    
     }
-  }
-  for (var key in headers) {
-    if (typeof headers[key] == 'string') {
-      this.packet.setRequestHeader(key, headers[key]);      
+
+    this.packet.setRequestHeader('Cookie', 'none');
+
+    // custom headers
+    for (var key in this.headers) {
+      if (typeof this.headers[key] == 'string') {
+        this.packet.setRequestHeader(key, this.headers[key]);   
+      }
     }
+    for (var key in headers) {
+      if (typeof headers[key] == 'string') {
+        this.packet.setRequestHeader(key, headers[key]);      
+      }
+    }
+
+    this.packet.setRequestHeader('Cache-Control', 'no-cache, no-transform');
+    this.packet.setRequestHeader('Connection', 'close');
+    this.packet.setRequestHeader('Host', this.host);  
+    this.packet.send(data);
+
+    this.clearTimeout();  
+    this.timeoutTimer = view.setTimeout(this.onTimeout.bind(this), CONNECTION.TIMEOUT);
+
+    HTTPRequest.available = false;
   }
-
-  this.packet.setRequestHeader('Cache-Control', 'no-cache, no-transform');
-  this.packet.setRequestHeader('Connection', 'close');
-  this.packet.setRequestHeader('Host', this.host);  
-  this.packet.send(data);
-
-  this.clearTimeout();  
-  this.timeoutTimer = view.setTimeout(this.onTimeout.bind(this), CONNECTION.TIMEOUT);
-
-  HTTPRequest.available = false;
 };
 
 HTTPRequest.prototype.stop = function() {
