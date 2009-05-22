@@ -414,13 +414,18 @@ Feed.prototype.refresh = function() {
     }.bind(this);
 
     element.onclick = function(i) { 
-      gadget.detailsView.SetContent('', undefined, 'details.xml', false, 0);
-      gadget.detailsView.detailsViewData.putValue('article', this.feed.items[i]);
-      gadget.detailsView.detailsViewData.putValue('loginSession', loginSession);
-      gadget.detailsView.detailsViewData.putValue('gadget', gadget);
-      gadget.detailsView.detailsViewData.putValue('listing', listing);
-      gadget.detailsView.detailsViewData.putValue('feed', this);
-      plugin.showDetailsView(gadget.detailsView, "", gddDetailsViewFlagNone, gadget.onDetailsViewFeedback.bind(gadget));
+      if (gadget.detailsItem && gadget.detailsItem == this.feed.items[i]) {
+        plugin.closeDetailsView();
+      } else {
+        gadget.detailsView.SetContent('', undefined, 'details.xml', false, 0);
+        gadget.detailsView.detailsViewData.putValue('article', this.feed.items[i]);
+        gadget.detailsView.detailsViewData.putValue('loginSession', loginSession);
+        gadget.detailsView.detailsViewData.putValue('gadget', gadget);
+        gadget.detailsView.detailsViewData.putValue('listing', listing);
+        gadget.detailsView.detailsViewData.putValue('feed', this);
+        plugin.showDetailsView(gadget.detailsView, "", gddDetailsViewFlagNone, gadget.onDetailsViewFeedback.bind(gadget));
+        gadget.detailsItem = this.feed.items[i];
+      }
     }.bind(this, i);
   
     feedContent.appendElement('<div height="1" background="#d7d7d7" />');
