@@ -151,7 +151,7 @@ CustomScrollbar.prototype.wheel = function() {
   if (event.wheelDelta > 0) {
     this.startUp();
     
-    var time = 100 * (Math.abs(event.wheelDelta) / 360);    
+    var time = 300 * (Math.abs(event.wheelDelta) / 360);    
     setTimeout(function() {
       this.endUp();
       this.halt.wheel = false;
@@ -159,7 +159,7 @@ CustomScrollbar.prototype.wheel = function() {
   } else if (event.wheelDelta < 0) {
     this.startDown();
     
-    var time = 100 * (Math.abs(event.wheelDelta) / 360);          
+    var time = 300 * (Math.abs(event.wheelDelta) / 360);          
     setTimeout(function() {
       this.endDown();
       this.halt.wheel = false;      

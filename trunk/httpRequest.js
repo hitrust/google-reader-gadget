@@ -17,7 +17,15 @@ limitations under the License.
 // @fileoverview Functions for server communications through XMLHttpRequest
 
 function createXhr() {
-  return framework.google.betaXmlHttpRequest();
+  var xhr;
+
+  try {
+    xhr = framework.google.betaXmlHttpRequest();
+  } catch (e) {
+    xhr = new XMLHttpRequest();
+  }
+
+  return xhr;
 }
 
 var httpRequest = new HTTPRequest();
