@@ -19,6 +19,7 @@ limitations under the License.
  */
 function Main() {
   this.detailsView = new DetailsView();
+  this.detailsItem = null;
 };
 
 /**
@@ -45,6 +46,8 @@ Main.prototype.onDetailsViewFeedback = function(detailsViewFlags) {
       }
     }
   }
+
+  gadget.detailsItem = null;
 }
 
 /**
