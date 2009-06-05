@@ -63,7 +63,7 @@ Reader.prototype.reset = function() {
   feedContent.removeAllElements();
 }
 
-var REFRESH_INTERVAL_MS = 60 * 1000;
+var REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 var MAX_REFRESH_INTERVAL_MS = 2 * 60 * 60 * 1000;
 
 /**
@@ -107,6 +107,12 @@ Reader.prototype.reloadUnreadCount = function() {
   this.startTimeout();  
 
   if (loading.visible) return;
+
+  if (feedContent.visible && this.currentFeed) {
+    this.currentFeed.reload();
+    return;
+  }
+
   if (!listingContent.visible) return;
   if (!listing.folders || !listing.feeds) return;
   if (!listing.folders['root'] || !listing.folders['all']) return;
