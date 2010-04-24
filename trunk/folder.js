@@ -156,7 +156,8 @@ Folder.prototype.refreshFriend = function(friend) {
     var httpRequest = new HTTPRequest();
     httpRequest.host = CONNECTION.READER_HOST;
     httpRequest.shouldShowLoading = false;
-    httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+    httpRequest.addHeader('Authorization',
+        'GoogleLogin auth=' + loginSession.token);
     httpRequest.url = 'http://' + CONNECTION.READER_HOST + friend.photoUrl;
     httpRequest.connect('', this.loadImage.bind(this, img), function() {});
   }

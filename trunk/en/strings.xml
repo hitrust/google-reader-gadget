@@ -2,12 +2,12 @@
   <GADGET_NAME>Google Reader</GADGET_NAME>
   <GADGET_DESCRIPTION>Read your Google Reader subscriptions</GADGET_DESCRIPTION>
   <GADGET_ABOUT_TEXT>Google Reader
-Copyright (c) 2009 Google Inc. All Rights Reserved.
+Copyright (c) 2010 Google Inc. All Rights Reserved.
 Read your Google Reader subscriptions.
 </GADGET_ABOUT_TEXT>
-  <GADGET_COPYRIGHT>Copyright 2009 Google Inc. All Rights Reserved.</GADGET_COPYRIGHT>
+  <GADGET_COPYRIGHT>Copyright 2010 Google Inc. All Rights Reserved.</GADGET_COPYRIGHT>
   <GADGET_OWNER>Google</GADGET_OWNER>
-  <VERSION_STRING>1.0.0.0</VERSION_STRING>
+  <VERSION_STRING>1.0.0.1</VERSION_STRING>
   
   <!-- date strings -->
   <DATE_YESTERDAY>Yesterday</DATE_YESTERDAY>

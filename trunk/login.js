@@ -73,11 +73,25 @@ LoginSession.prototype.login = function() {
   httpRequest.connect(data, this.loginSuccess.bind(this), this.loginError.bind(this));    
 };
 
+LoginSession.parseResponse = function(responseText) {
+  var responseLines = responseText.split('\n');
+  var responseData = {};
+  for (var i = 0; i < responseLines.length; ++i) {
+    var split = responseLines[i].indexOf('=');
+    var key = responseLines[i].substr(0, split);
+    var value = responseLines[i].substr(split + 1);
+    responseData[key] = value;
+  }
+
+  return responseData;
+};
+
 /**
  * Save auth token
  */
 LoginSession.prototype.loginSuccess = function(responseText) {
-  this.token = this.getCookie('SID', responseText);
+  var responseData = LoginSession.parseResponse(responseText);
+  this.token = responseData['Auth'];
 
   if (this.token) {
     username.innerText = this.username.toLowerCase();
@@ -99,7 +113,8 @@ LoginSession.prototype.loginSuccess = function(responseText) {
  */
 LoginSession.prototype.loginError = function(status, responseText) {
   if (status == 403) {
-    var error = this.getCookie('Error', responseText) || 'Unknown';
+    var responseData = LoginSession.parseResponse(responseText);
+    var error = responseData['Error'] || 'Unknown';
   }
   
   errorMessage.display(LOGIN_ERRORS[error] || ERROR_SERVER_OR_NETWORK);
@@ -113,14 +128,6 @@ LoginSession.prototype.logout = function() {
   options.putValue('token', '');
   options.putValue('username', '');  
   reader.logout();
-};
-
-/**
- * Match and return cookie
- */
-LoginSession.prototype.getCookie = function(key, responseText) {
-  var matches = responseText.match(new RegExp(key+'\=(.*)'));
-  return (matches && matches.length > 1) ? matches[1] : '';
 };
 
 /**
