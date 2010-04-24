@@ -265,7 +265,8 @@ EditAPI.prototype._apiCall = function(secondTry) {
 
   httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.url = this.command ? CONNECTION.READER_URL + this.command : this.url;
-  httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+  httpRequest.addHeader('Authorization',
+      'GoogleLogin auth=' + loginSession.token);
   httpRequest.connect(this.data.toQueryString(), successCallback, errorCallback);
 }
 
@@ -277,7 +278,8 @@ EditAPI.prototype.getToken = function(secondTry) {
 
   httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.url = CONNECTION.READER_URL + 'token';
-  httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+  httpRequest.addHeader('Authorization',
+      'GoogleLogin auth=' + loginSession.token);
   httpRequest.connect('', successCallback, this.getError.bind(this));
 }
 

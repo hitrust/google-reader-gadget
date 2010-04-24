@@ -195,7 +195,8 @@ Listing.prototype.reload = function() {
   this.saveScroll();
 
   httpRequest.host = CONNECTION.READER_HOST;
-  httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+  httpRequest.addHeader('Authorization',
+      'GoogleLogin auth=' + loginSession.token);
   httpRequest.overrideLoading = true;
 
   // request the friends list

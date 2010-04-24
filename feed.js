@@ -91,7 +91,8 @@ Feed.prototype.search = function() {
   
   httpRequest.host = CONNECTION.READER_HOST;
   httpRequest.url = CONNECTION.READER_URL + CONNECTION.SEARCH_PREFIX + encodeURIComponent(search.value.trim()) + flags;    
-  httpRequest.addHeader('Cookie', 'SID='+loginSession.token);
+  httpRequest.addHeader('Authorization',
+      'GoogleLogin auth=' + loginSession.token);
   httpRequest.connect('', this.getSearchIDs.bind(this), this.getError.bind(this));
 }
 

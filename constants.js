@@ -27,7 +27,7 @@ var CONNECTION = {
   AUTH_HOST: 'www.google.com',    
   AUTH_URL: 'https://www.google.com/accounts/ClientLogin',
   AUTH_SERVICE: 'reader',
-  AUTH_TYPE: 'HOSTED_OR_GOOGLE',  
+  AUTH_TYPE: 'GOOGLE',  
   READER_HOST: 'www.google.com',  
   READER_URL: 'http://www.google.com/reader/api/0/',
   EMAIL_URL: 'http://www.google.com/reader/email-this',
